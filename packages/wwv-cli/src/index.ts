@@ -36,14 +36,27 @@ program
       }
   });
 
-import { buildPackage } from "./commands/publish";
+import { packagePlugin } from "./commands/package";
+import { publishToNpm } from "./commands/publish";
+
+program
+  .command("package")
+  .description("Build and package the plugin into a .wwvpkg file for sideloading")
+  .action(async () => {
+      try {
+          await packagePlugin();
+      } catch (err: any) {
+          console.error("Error:", err.message);
+          process.exit(1);
+      }
+  });
 
 program
   .command("publish")
-  .description("Build and package the plugin into a .wwvpkg file")
+  .description("Publish the plugin to NPM and notify the WWV Marketplace")
   .action(async () => {
       try {
-          await buildPackage();
+          await publishToNpm();
       } catch (err: any) {
           console.error("Error:", err.message);
           process.exit(1);
