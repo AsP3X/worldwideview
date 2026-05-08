@@ -45,6 +45,8 @@ RUN node scripts/copy-cesium.mjs
 FROM node:22-alpine AS runner
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
@@ -67,6 +69,7 @@ COPY --from=builder /app/.next/standalone ./
 # Copy static assets that standalone mode does NOT include
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/scripts/https-proxy.mjs ./scripts/https-proxy.mjs
 
 # Entrypoint: migrate DB on first run, then start server
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
@@ -76,6 +79,6 @@ RUN chmod +x ./docker-entrypoint.sh
 # Declare /app/data as a persistent volume mount point.
 VOLUME ["/app/data"]
 
-EXPOSE 3000
+EXPOSE 3000 3001
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
