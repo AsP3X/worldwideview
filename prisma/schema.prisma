@@ -1,5 +1,6 @@
-// Prisma schema — SQLite for local, PostgreSQL for cloud.
-// Connection URL configured in prisma.config.ts
+// Prisma schema — PostgreSQL for all environments.
+// Local dev: use `npx prisma dev` for a zero-install local PGLite instance.
+// Cloud/Production: set DATABASE_URL to your Supabase/Postgres connection string.
 
 datasource db {
   provider = "sqlite"
