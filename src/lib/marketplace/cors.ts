@@ -1,36 +1,18 @@
 import { NextResponse } from "next/server";
 
-const ALLOWED_ORIGINS = [
-    "http://localhost:3001",
-    "https://marketplace.worldwideview.dev",
-];
-
-function isLocalNetwork(origin: string): boolean {
-    if (!origin.startsWith("http://") && !origin.startsWith("https://")) return false;
-    try {
-        const url = new URL(origin);
-        return (
-            url.hostname === "localhost" ||
-            url.hostname === "127.0.0.1" ||
-            url.hostname.startsWith("192.168.") ||
-            url.hostname.startsWith("10.") ||
-            /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(url.hostname)
-        );
-    } catch {
-        return false;
-    }
-}
 
 /** Build CORS headers for the marketplace bridge API. */
 export function corsHeaders(request: Request): Record<string, string> {
-    const origin = request.headers.get("origin") ?? "*";
-    const allowed = origin;
+    const origin = request.headers.get("origin");
 
-    // If origin is not allowlisted, return no CORS headers (browser will block)
-    if (!allowed) return {};
+    // If there is no origin, no CORS headers are needed
+    if (!origin) return {};
 
+    // Explicitly allow ANY origin for the marketplace API routes.
+    // By reflecting the origin, we permit self-hosted marketplaces on any domain/IP
+    // while keeping the door open strictly for these specific endpoints.
     return {
-        "Access-Control-Allow-Origin": allowed,
+        "Access-Control-Allow-Origin": origin,
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Private-Network": "true",
