@@ -20,6 +20,7 @@ import { useBootSequence } from "@/core/hooks/useBootSequence";
 import { useIsMobile } from "@/core/hooks/useIsMobile";
 import { useMarketplaceSync } from "@/core/hooks/useMarketplaceSync";
 import { DataBusSubscriber } from "./DataBusSubscriber";
+import { AgentBusSubscriber } from "./AgentBusSubscriber";
 import { MobileHudBar } from "./MobileHudBar";
 import { MobileCameraStats } from "./MobileCameraStats";
 import dynamic from "next/dynamic";
@@ -150,6 +151,7 @@ export function AppShell() {
 
             <TimelineSync />
             <DataBusSubscriber />
+            <AgentBusSubscriber />
 
             <Header />
             {isMobile && <MobileHudBar />}
