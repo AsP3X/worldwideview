@@ -1,6 +1,6 @@
 {
   "name": "worldwideview",
-  "version": "2.5.6",
+  "version": "2.6.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.4",
@@ -31,6 +31,7 @@
     "@types/pg": "^8.20.0",
     "@vercel/analytics": "^1.6.1",
     "@worldwideview/wwv-plugin-sdk": "workspace:*",
+    "@worldwideview/wwv-plugin-fortiguard": "workspace:*",
     "bcryptjs": "^3.0.3",
     "cesium": "^1.141.0",
     "cheerio": "^1.2.0",
