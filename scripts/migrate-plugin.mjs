@@ -147,7 +147,18 @@ export default defineConfig({
     }
 
     if (seederPath) {
-        console.log(`📁 Found backend seeder at ${seederPath}. Updating...`);
+        console.log(`📁 Found backend seeder at ${seederPath}.`);
+        
+        // 5c. Enforce exact folder naming match
+        const basename = path.basename(seederPath);
+        if (basename !== pluginName) {
+            const newPath = path.join(path.dirname(seederPath), pluginName);
+            console.log(`📦 Renaming seeder folder from '${basename}' to '${pluginName}' to match frontend ID...`);
+            await fs.rename(seederPath, newPath);
+            seederPath = newPath;
+        }
+
+        console.log(`📁 Updating backend seeder at ${seederPath}...`);
         const pkgPath = path.join(seederPath, "package.json");
         if (await exists(pkgPath)) {
             const pkgRaw = await fs.readFile(pkgPath, "utf-8");
