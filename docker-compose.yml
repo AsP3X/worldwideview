@@ -60,6 +60,8 @@ services:
       - ../wwv-seeders:/mnt/host/c/dev/worldwideview/local-seeders/community
       - ../wwv-seeders-private:/mnt/host/c/dev/worldwideview/local-seeders/private
     restart: unless-stopped
+    profiles:
+      - engine
 
   wwv-redis:
     image: redis:7-alpine
@@ -68,6 +70,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    profiles:
+      - engine
 
 volumes:
   wwv-data:
