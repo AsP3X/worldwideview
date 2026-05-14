@@ -9,6 +9,12 @@
 export type SensitiveString = string & { readonly __brand: "SensitiveString" };
 
 /**
+ * Factory function to safely cast a string to a SensitiveString.
+ * This provides a single grep target for every place a secret enters the system.
+ */
+export const sensitive = (s: string): SensitiveString => s as SensitiveString;
+
+/**
  * The authorization tier of the plugin client.
  */
 export type Tier = "basic" | "pro";
@@ -46,6 +52,11 @@ export interface TokenExchangeResponse {
 }
 
 /**
+ * Scaffold for a discriminated union of all possible WebSocket messages.
+ */
+export type WebSocketMessage = WebSocketAuthMessage; // | WebSocketSubscribeMessage | ...
+
+/**
  * First message sent by the Local App over the WebSocket to authenticate with the Data Engine.
  * 
  * @see ADR-001 §4 "WebSocket Authentication Gating"
@@ -60,6 +71,7 @@ export interface WebSocketAuthMessage {
 
 /**
  * Standard PKCE request shape during the initial connect flow.
+ * Note: snake_case fields below match RFC 7636 / RFC 6749 wire format.
  */
 export interface PKCEConnectRequest {
     /** Randomly generated state to prevent CSRF */
@@ -72,12 +84,29 @@ export interface PKCEConnectRequest {
 
 /**
  * Standard PKCE exchange payload.
+ * Implements strict PKCE-protected Authorization Code Grant per RFC 7636.
+ * Note: snake_case fields below match RFC 7636 / RFC 6749 wire format.
  */
 export interface PKCETokenExchange {
+    grant_type: "authorization_code";
+    redirect_uri: string;
+    client_id: string;
     /** The authorization code received from the callback */
     code: string;
     /** The original unhashed verifier to prove possession */
     code_verifier: string;
+}
+
+/**
+ * Payload returned by the Marketplace after a successful PKCE token exchange.
+ */
+export interface PKCETokenExchangeResponse {
+    /** The long-lived API key issued to the Local App */
+    apiKey: SensitiveString;
+    /** Tier surfaced so the Local App can show "Connected to X tier" in the UI */
+    tier?: Tier;
+    /** Optional issuance timestamp for future rotation/expiration logic */
+    issuedAt?: number;
 }
 
 /**
@@ -100,7 +129,10 @@ export interface PluginJwtClaims {
     jti: string;
     /** The entitlement tier */
     tier: Tier;
-    /** Optional array of allowed plugin namespace prefixes */
+    /** 
+     * Optional array of allowed plugin namespace prefixes.
+     * @example ["wwv-plugin-aviation", "wwv-plugin-maritime-*"]
+     */
     plugins?: string[];
 }
 
@@ -112,4 +144,25 @@ export interface AuthErrorResponse {
     error: string;
     /** Human-readable error description */
     error_description: string;
+}
+
+/**
+ * JSON Web Key representing a single public key used to verify signatures.
+ * Mirrors the RFC 7517 shape.
+ */
+export interface JWK {
+    kty: string;
+    kid: string;
+    use?: string;
+    alg?: string;
+    n?: string;
+    e?: string;
+    [key: string]: unknown;
+}
+
+/**
+ * Expected shape of the /.well-known/jwks.json endpoint.
+ */
+export interface JWKSResponse {
+    keys: JWK[];
 }
