@@ -41,6 +41,10 @@ Plugins from the marketplace use the `bundle` format and are imported at runtime
 
 ## Token Exchange Authentication (PKCE)
 
+> [!IMPORTANT]
+> **See ADR-0001 (Decentralized Plugin Authentication & SSRF Mitigation)**
+> The PKCE flow and API key proxying MUST adhere to ADR-0001. This mandates AES-256-GCM encryption with 100,000 PBKDF2 iterations for all credentials stored in the `MarketplaceCredential` model, and DNS IP Pinning / stream chunking on all proxy requests to mitigate SSRF.
+
 Auth is governed by an **Asymmetric JWT Token Exchange (PKCE)** model to eliminate static, long-lived, and un-rotatable tokens. The Marketplace acts as the OAuth Authorization Server.
 
 ```
@@ -178,7 +182,7 @@ tenants ─── installed_plugins
 | Manifest tampering | Base64 only — no code execution. Validated via `validateManifest()` |
 | Malicious plugins | Sandboxed in Web Workers (unverified). CSP headers. Code review (verified) |
 | Supply chain | Plugin bundles checksummed (SHA-256), integrity verified |
-| Plugin API keys | Stored encrypted in `settings` table, never exposed to browser |
+| Plugin API keys | Stored encrypted (AES-256-GCM) in `MarketplaceCredential` model, never exposed to browser |
 | Trust forgery | Registry signed with Ed25519 — `verified` cannot be claimed for unlisted plugins |
 | Trust stamping | WWV always overwrites `manifest.trust` server-side — client/marketplace input ignored |
 | Unverified consent | Warning dialog before any unverified plugin loads; approval stored per-plugin in `localStorage` |

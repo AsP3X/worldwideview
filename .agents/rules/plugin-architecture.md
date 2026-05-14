@@ -193,6 +193,10 @@ Plugins declare auth type in the manifest:
 
 ### Shared Auth Contracts & Security Branding
 
+> [!IMPORTANT]
+> **See ADR-0001 (Decentralized Plugin Authentication & SSRF Mitigation)**
+> All proxy and token-exchange implementations must strictly adhere to ADR-0001. This includes enforcing DNS IP Pinning and stream size limits via `undici.Agent` on all proxy routes to prevent SSRF, and encrypting all long-lived credentials (API keys) using AES-256-GCM with 100k PBKDF2 iterations before storing them in the `MarketplaceCredential` model.
+
 When implementing the `token-exchange` flow or communicating across domains, all plugins and endpoints MUST use the strictly defined shared auth contracts from `@worldwideview/wwv-plugin-sdk/src/auth-contracts.ts` (e.g., `TokenExchangeRequest`, `WebSocketAuthMessage`).
 
 **Sensitive Credentials**: All long-lived secrets (like API keys and tokens) MUST use the `SensitiveString` branded type and be instantiated via the `sensitive(str)` factory function. This prevents accidental logging/serialization and creates a single grep target for security audits.

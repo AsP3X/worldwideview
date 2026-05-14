@@ -138,8 +138,8 @@ Read the relevant rule file when working in that domain:
 |---|---|---|
 | `platform-architecture` | High-level platform goals, product vision, business model, and Edition System | `.agents/rules/platform-architecture.md` |
 | `application-architecture` | Next.js frontend, Zustand state management, and CesiumJS integration | `.agents/rules/application-architecture.md` |
-| `plugin-architecture` | Creating/modifying plugins, lifecycle, capability declarations, and seeders | `.agents/rules/plugin-architecture.md` |
-| `marketplace-architecture` | Dynamic plugin installation, DB sync, and CDN loading | `.agents/rules/marketplace-architecture.md` |
+| `plugin-architecture` | Creating/modifying plugins, lifecycle, capability declarations, and seeders (See ADR-0001) | `.agents/rules/plugin-architecture.md` |
+| `marketplace-architecture` | Dynamic plugin installation, DB sync, CDN loading, and PKCE Auth (See ADR-0001) | `.agents/rules/marketplace-architecture.md` |
 | `cloud-auth-architecture` | Cloud edition, PostgreSQL RLS, multi-tenancy, and licensing | `.agents/rules/cloud-auth-architecture.md` |
 | `server-management` | Server development and debugging using SSH and Coolify MCP | `.agents/rules/server-management.md` |
 | `stakeholders-and-human-centered-design` | Human-centered design principles and stakeholder map | `.agents/rules/stakeholders-and-human-centered-design.md` |

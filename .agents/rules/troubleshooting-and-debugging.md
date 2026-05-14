@@ -20,3 +20,13 @@ We employ a **structured logging strategy** in the frontend to reduce noise and 
 If a plugin fails to load in the Data Engine with a `404` or `Error [ERR_MODULE_NOT_FOUND]` error during startup:
 - **Root Cause**: The seeder may exist simultaneously in both the `wwv-seeders-community` and `wwv-seeders-private` repositories. 
 - **Resolution**: Seeders must have a unique namespace. Ensure that private plugins (e.g., `aviation`, `maritime`, `military-aviation`) are explicitly removed from the community repository to prevent workspace-level module resolution failures when the V2 engine attempts to load them. Private seeders take priority, but overlapping names will cause dependency conflicts.
+
+## 4. Agent Execution Environments (Windows/PowerShell)
+When an AI agent or developer is executing CLI commands via tools in this project on Windows:
+- **Rule**: NEVER use the `&&` operator to chain commands in PowerShell. It will result in parser errors.
+- **Resolution**: Use sequential execution, run commands separately, or use PowerShell-safe chaining like `; if ($?) { }`.
+
+## 5. Next.js vs. Undici Fetch Type Mismatches
+When implementing SSRF protections (e.g., DNS IP Pinning via custom `Dispatcher`), you will likely use `undici.Agent`.
+- **Root Cause**: Passing global Next.js `RequestInit` options directly into `undici.fetch` will throw strict TypeScript errors because the `BodyInit` and `RequestCache` signatures differ, and `dns.lookup` returns a generic `number` instead of exactly `4 | 6` for IP families.
+- **Resolution**: Strip out Next.js specific keys, explicitly cast `body` as `any`, and explicitly type `resolvedFamily: number` when interfacing between Next.js request streams and the `undici` library.
