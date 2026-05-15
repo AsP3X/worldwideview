@@ -1,7 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { headers } from "next/headers";
-import { PrismaClient } from "prisma-client-deca962f6a47f596886a3d83cbf41cca88f84f26f1aac58d881c9529eafea2bf";
+import { PrismaClient } from "../generated/prisma";
 
 /**
  * Prisma client singleton — PostgreSQL only.

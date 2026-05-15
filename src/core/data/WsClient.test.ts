@@ -43,9 +43,7 @@ describe("WsClient", () => {
       readyState: 0, // CONNECTING
     };
 
-    global.WebSocket = vi.fn().mockImplementation(function() {
-      return mockWs;
-    }) as any;
+    global.WebSocket = vi.fn().mockImplementation(function() { return mockWs; }) as any;
     Object.assign(global.WebSocket, {
       CONNECTING: 0,
       OPEN: 1,
