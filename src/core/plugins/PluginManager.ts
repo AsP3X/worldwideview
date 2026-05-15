@@ -124,10 +124,10 @@ class PluginManager {
                 const isNonFatalFetch =
                     error instanceof TypeError && error.message === "Failed to fetch";
                 if (isNonFatalFetch) {
-                    console.warn(`[Plugin:${plugin.id}] Non-fatal initial fetch failed (WS will deliver data):`, error.message);
+                    console.warn("[Plugin:%s] Non-fatal initial fetch failed (WS will deliver data): %s", plugin.id, error.message);
                     return;
                 }
-                console.error(`[Plugin:${plugin.id}]`, error);
+                console.error("[Plugin:%s]", plugin.id, error);
                 trackEvent("plugin-error", { plugin: plugin.id, error: error.message });
                 const store = useStore.getState();
                 if (store.showErrorToast) {
