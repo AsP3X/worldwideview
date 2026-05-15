@@ -61,17 +61,23 @@ export function isKnownVideoPlatform(url: string): boolean {
  */
 export function getYouTubeEmbedUrl(url: string): string {
     if (!url) return url;
-    if (
-        !url.includes("youtube.com")
-        && !url.includes("youtube-nocookie.com")
-        && !url.includes("youtu.be")
-    ) {
-        return url;
-    }
 
     try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname.toLowerCase();
+        const allowedHosts = new Set([
+            "youtube.com",
+            "www.youtube.com",
+            "m.youtube.com",
+            "youtube-nocookie.com",
+            "www.youtube-nocookie.com",
+            "youtu.be",
+        ]);
+
+        if (!allowedHosts.has(hostname)) return url;
+
         const u = new URL(
-            url.includes("youtu.be")
+            hostname === "youtu.be"
                 ? url.replace("youtu.be/", "youtube.com/embed/")
                 : url,
         );
