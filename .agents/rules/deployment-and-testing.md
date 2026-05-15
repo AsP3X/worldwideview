@@ -259,6 +259,9 @@ The production Coolify instance runs on a local server at `192.168.68.64`. Direc
 1. Push to `silvertakana/worldwideview`
 2. Coolify webhook triggers → automated BuildKit deployment on the host server.
 
+**GitHub Actions Workflows:**
+- **Minimal Permissions:** CodeQL and GitHub security best practices dictate that `GITHUB_TOKEN` permissions should always be explicitly constrained. When creating or modifying `.github/workflows/*.yml` files, you MUST always include an explicit `permissions` block (e.g., `permissions: { contents: read }` or similar required scopes) at the top level or job level to adhere to the principle of least privilege.
+
 **Coolify Deployment Rules & Gotchas (The "Redis 500k" Rule):**
 - **Coolify Pulls from GitHub:** Coolify does *not* deploy your local workspace files. It strictly clones the repository from GitHub.
 - **Push Before You Deploy:** If you make a critical infrastructure or optimization fix locally (e.g., swapping a massive `HSET` pipeline for a compressed 5-min throttled `setLiveSnapshot`), you **must** `git commit` and `git push` those changes to the `main` branch before triggering a Coolify deployment.
