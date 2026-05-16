@@ -62,6 +62,8 @@ export async function GET(req: NextRequest) {
         });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : "Unknown error";
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[StreamProxy] Error:", message);
         const status = message.includes("SSRF Error") ? 403 : 502;
         return NextResponse.json(

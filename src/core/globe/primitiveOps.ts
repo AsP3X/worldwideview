@@ -70,6 +70,8 @@ export function updateExistingItem(item: AnimatableItem, entity: GeoEntity, opti
         item.primitive.disableDepthTestDistance = disableDepthTestDistance;
     }
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const billboardColor = (options as any)._isAutoSVG ? Color.WHITE : color;
 
     if (!Color.equals(item.primitive.color, billboardColor)) item.primitive.color = billboardColor;
@@ -124,6 +126,8 @@ billboards: BillboardCollection,
     // Use the hi-res cached icon if available, otherwise use raw and trigger async upscale
     const resolvedIcon = options.iconUrl ? (getHiResIconSync(options.iconUrl) ?? options.iconUrl) : undefined;
     const baseSize = getBaseSize();
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const billboardColor = (options as any)._isAutoSVG ? Color.WHITE : color;
 
     // Performance optimization: Ground-based entities (altitude < 100m) should disable
@@ -181,6 +185,8 @@ lastHighlightState: 'normal'
     // Trigger async upscale for newly spawned primitives that missed the cache
     if (options.iconUrl && resolvedIcon === options.iconUrl) {
         getHiResIcon(options.iconUrl).then((url) => {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const bb = addedPrimitive as any;
             if (bb && !bb.isDestroyed?.()) {
                 bb.image = url;

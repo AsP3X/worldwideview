@@ -17,6 +17,8 @@ export async function GET(request: Request) {
     const isValidUserKey = userKey && userKey.length >= 20;
     const apiKey = isValidUserKey ? userKey : process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("GOOGLE_MAPS_API_KEY is not defined and no user key provided");
         return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
     }
@@ -38,6 +40,8 @@ export async function GET(request: Request) {
         const data = await response.json();
 
         if (data.status !== "OK") {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("Google Places Details API Error:", data);
             return NextResponse.json({ error: "Failed to fetch place details" }, { status: 500 });
         }
@@ -57,6 +61,8 @@ export async function GET(request: Request) {
         cache.set(cacheId, { data: result, expiresAt: Date.now() + TTL_MS });
         return NextResponse.json(result);
     } catch (error) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("Error in Places Details route:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

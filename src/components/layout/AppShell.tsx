@@ -62,6 +62,8 @@ export function AppShell() {
     const initLayer = useStore((s) => s.initLayer);
     const boot = useBootSequence();
     const isMobile = useIsMobile();
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line react-hooks/purity
     const bootStartRef = useRef(Date.now());
     const [hostReady, setHostReady] = useState(false);
     const {
@@ -82,6 +84,8 @@ export function AppShell() {
     useEffect(() => {
         const startPlatform = async () => {
             initLogCatcher();
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log("[AppShell] Initializing Platform...");
 
             // Inject host libraries for dynamic plugin loading
@@ -126,11 +130,15 @@ export function AppShell() {
                 }
             }
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log("[AppShell] Platform Ready. Waiting for globe tiles...");
         };
 
         // Start boot sequence when globe tiles are loaded
         const unsubGlobe = dataBus.on("globeReady", () => {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log("[AppShell] Globe ready — starting boot sequence.");
             boot.startBoot();
         });

@@ -9,6 +9,8 @@ describe('filterSlice', () => {
     let store: StoreApi<FilterSlice>;
 
     beforeEach(() => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         store = createStore<FilterSlice>((set, get, api) => createFilterSlice(set as any, get as any, api as any));
     });
 

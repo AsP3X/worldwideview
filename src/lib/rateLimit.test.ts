@@ -69,6 +69,8 @@ describe("RateLimiter", () => {
         localLimiter.check("ip-cleanup");
 
         // Force the store resetAt to be in the past
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const entry = (localLimiter as any).store.get("ip-cleanup");
         entry.resetAt = Date.now() - 1000;
 

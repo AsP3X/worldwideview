@@ -213,6 +213,8 @@ describe("DeclarativePlugin", () => {
 
     test("destroy clears context", async () => {
         const plugin = new DeclarativePlugin(makeManifest());
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await plugin.initialize({} as any);
         // We can't strictly observe context, but we can verify it doesn't throw
         expect(() => plugin.destroy()).not.toThrow();
@@ -358,6 +360,8 @@ describe("DeclarativePlugin", () => {
                 icon: "/icon.png"
             }
         }));
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const opts = plugin.renderEntity({} as any);
         expect(opts.type).toBe("billboard");
         expect(opts.iconUrl).toBe("/icon.png");

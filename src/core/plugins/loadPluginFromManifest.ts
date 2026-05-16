@@ -34,11 +34,15 @@ export class ManifestLoadError extends Error {
  * @throws Error if the module cannot be reached or no valid plugin interface is discovered.
  */
 async function loadBundlePlugin(entry: string): Promise<WorldPlugin> {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @next/next/no-assign-module-variable
     const module = await import(/* webpackIgnore: true */ entry);
 
     /**
      * Helper to safely instantiate a class and verify its compliance with WorldPlugin.
      */
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const instantiate = (maybeClass: any): WorldPlugin | null => {
         if (typeof maybeClass === "function") {
             try {
@@ -95,6 +99,8 @@ export async function loadPluginFromManifest(
 ): Promise<WorldPlugin> {
     const result = validateManifest(manifest);
     if (!result.valid) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error(
             `[loadPluginFromManifest] ❌ VALIDATION FAILED for "${manifest.id || "unknown"}"\n`
             + `Errors: ${result.errors.join(", ")}\n`

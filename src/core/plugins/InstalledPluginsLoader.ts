@@ -31,6 +31,8 @@ export async function loadInstalledPlugins(): Promise<number> {
 
                 const result = validateManifest(manifest);
                 if (!result.valid) {
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.error(
                         `[InstalledPlugins] ❌ MANIFEST VALIDATION FAILED for "${record.pluginId}"\n`
                         + `Errors: ${result.errors.join(", ")}\n`
@@ -42,6 +44,8 @@ export async function loadInstalledPlugins(): Promise<number> {
                 await pluginManager.loadFromManifest(manifest);
                 loaded++;
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn(
                     `[InstalledPlugins] Failed to load "${record.pluginId}":`,
                     err instanceof Error ? err.message : err,
@@ -50,9 +54,13 @@ export async function loadInstalledPlugins(): Promise<number> {
         }
 
         if (loaded > 0) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log(`[InstalledPlugins] Loaded ${loaded} plugin(s)`);
         }
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[InstalledPlugins] Failed to read database:", err);
     }
 
@@ -76,6 +84,8 @@ function parseConfig(pluginId: string, config: string): PluginManifest | null {
         if (!parsed.id) parsed.id = pluginId;
         return parsed as PluginManifest;
     } catch {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn(`[InstalledPlugins] Invalid config JSON for "${pluginId}"`);
         return null;
     }

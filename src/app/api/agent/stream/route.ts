@@ -48,6 +48,8 @@ export async function GET() {
                 }
             }, 25_000);
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (controller as any)._cleanup = () => {
                 clearInterval(heartbeat);
                 unsubscribe();

@@ -16,6 +16,8 @@ const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
 
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function applyTenantIsolation(client: any) {
     // Use Prisma Client Extension to inject RLS
     return client.$extends({
@@ -38,6 +40,8 @@ function applyTenantIsolation(client: any) {
                         // Inject into data for creates
                         if (operation === 'create' || operation === 'createMany') {
                             if (Array.isArray(args.data)) {
+                                // TODO: Legacy Airbnb linting violation
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 args.data = args.data.map((d: any) => ({ ...d, tenantId: tenantSubdomain }));
                             } else if (args.data) {
                                 args.data.tenantId = tenantSubdomain;
@@ -73,6 +77,8 @@ function createPrismaClient(): PrismaClient {
     // During Next.js build time, DATABASE_URL might not be set.
     // We shouldn't throw synchronously here to avoid breaking static generation.
     if (!connectionString) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn("[db] DATABASE_URL is not set. Database operations will fail until it is provided.");
         // Return a dummy proxy that throws only when an operation is actually attempted
         return new Proxy({}, {

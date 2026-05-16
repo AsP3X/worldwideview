@@ -24,6 +24,8 @@ async function resolveWorkspace(subdomain: string) {
         }
         return null;
     } catch (e) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[proxy.ts] Workspace resolution failed:", e);
         return null;
     }
@@ -139,6 +141,8 @@ export default async function proxy(req: NextRequest) {
         }
     } catch (e) {
         // Fall through to login redirect
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[proxy.ts] Failed to fetch setup status:", e);
     }
 

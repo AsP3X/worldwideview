@@ -43,6 +43,7 @@ loadEnv('.env');
 const skipLocalDb = process.env.WWV_SKIP_LOCAL_DB === 'true' || process.env.WWV_SKIP_LOCAL_DB === '1';
 
 if (skipLocalDb) {
+  // eslint-disable-next-line no-console
   console.log('⏭️ Skipping local PostgreSQL startup (WWV_SKIP_LOCAL_DB is set).');
   process.exit(0);
 }
@@ -59,6 +60,7 @@ if (folderName !== 'worldwideview') {
 }
 
 process.env.WWV_DB_PORT = port.toString();
+// eslint-disable-next-line no-console
 console.log(`🔌 Assigned deterministic database port: ${port}`);
 
 // Robust rewrite of DATABASE_URL in .env
@@ -78,6 +80,7 @@ if (fs.existsSync(envPath)) {
         foundTargetActive = true;
         return line;
       } else {
+        // eslint-disable-next-line no-console
         console.warn(`⚠️  [Telemetry] Commenting out conflicting DATABASE_URL: ${line.trim()}`);
         linesModified = true;
         return `# ${line}`;
@@ -87,6 +90,7 @@ if (fs.existsSync(envPath)) {
   });
   
   if (!foundTargetActive) {
+    // eslint-disable-next-line no-console
     console.log(`🔌 [Telemetry] Injecting correct local DATABASE_URL for port ${port}.`);
     newLines.push(``);
     newLines.push(`# Dynamically injected by boot-db.mjs for worktree`);
@@ -107,8 +111,10 @@ if (fs.existsSync(envPath)) {
       } catch (err) {
         attempt++;
         if (err.code === 'EBUSY' || err.code === 'EPERM' || err.message.includes('os error 32')) {
+          // eslint-disable-next-line no-console
           console.warn(`⚠️  [Telemetry] File lock encountered on .env (attempt ${attempt}/${maxRetries}). Retrying in 100ms...`);
           if (attempt >= maxRetries) {
+            // eslint-disable-next-line no-console
             console.error('❌ Failed to write .env after multiple attempts due to file locks.');
             throw err;
           }
@@ -124,6 +130,7 @@ if (fs.existsSync(envPath)) {
 }
 
 
+// eslint-disable-next-line no-console
 console.log('🚀 Checking local PostgreSQL database...');
 
 try {
@@ -131,19 +138,26 @@ try {
   try {
     execSync('docker --version', { stdio: 'ignore' });
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log('⚠️ Docker is not installed or not in PATH. Skipping local database startup.');
+    // eslint-disable-next-line no-console
     console.log('💡 If you want to run a local database automatically, please install Docker Desktop.');
     process.exit(0);
   }
 
   // Start the db service and wait for it to be healthy
+  // eslint-disable-next-line no-console
   console.log('📦 Starting PostgreSQL via Docker Compose...');
   execSync('docker compose up -d --wait db', { stdio: 'inherit' });
 
+  // eslint-disable-next-line no-console
   console.log('✅ Local PostgreSQL database is ready!');
 
 } catch (error) {
+  // eslint-disable-next-line no-console
   console.error('❌ Failed to start local database:', error.message);
+  // eslint-disable-next-line no-console
   console.log('💡 Ensure that docker is running and try again');
+  // eslint-disable-next-line no-console
   console.log('💡 You may need to start it manually or set WWV_SKIP_LOCAL_DB=true to use an external database.');
 }

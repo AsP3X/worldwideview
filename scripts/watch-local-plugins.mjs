@@ -39,10 +39,12 @@ function handleFileChange(eventType, filename) {
 
 async function runSync(filename) {
     isSyncing = true;
+    // eslint-disable-next-line no-console
     console.log(`\n[watch] Change detected in local plugins (file: ${filename}). Syncing...`);
     try {
         await syncAll();
     } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(`[watch] Sync failed:`, err);
     } finally {
         isSyncing = false;
@@ -54,17 +56,21 @@ async function runSync(filename) {
 }
 
 // Initial sync
+// eslint-disable-next-line no-console
 console.log(`[watch] Starting initial sync...`);
 isSyncing = true;
 syncAll().then(() => {
     isSyncing = false;
     if (pendingSync) {
         pendingSync = false;
+        // eslint-disable-next-line no-console
         runSync("pending changes").catch(console.error);
     }
+    // eslint-disable-next-line no-console
     console.log(`[watch] Watching ${LOCAL_PLUGINS_DIR} for changes...`);
     fs.watch(LOCAL_PLUGINS_DIR, { recursive: true }, handleFileChange);
 }).catch(err => {
     isSyncing = false;
+    // eslint-disable-next-line no-console
     console.error(`[watch] Initial sync failed:`, err);
 });

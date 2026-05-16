@@ -13,11 +13,15 @@ export async function POST(req: Request) {
             sig!,
             process.env.STRIPE_WEBHOOK_SECRET!
         );
-    } catch (err: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (err: any) {
         return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
     }
 
     if (event.type === "checkout.session.completed") {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log("Subscription completed!");
         // Update user tier in DB, send license key via email
     }

@@ -18,6 +18,8 @@ export abstract class BaseAviationPlugin implements WorldPlugin {
     abstract id: string;
     abstract name: string;
     abstract description: string;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abstract icon: any;
     category = "aviation" as const;
     abstract version: string;
@@ -35,6 +37,8 @@ export abstract class BaseAviationPlugin implements WorldPlugin {
 
     // Implementations must define how payload comes via fetch and websocket
     abstract fetch(timeRange: TimeRange): Promise<GeoEntity[]>;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abstract mapWebsocketPayload(payload: any): GeoEntity[];
     
     // Server backend configurations

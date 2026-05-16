@@ -16,10 +16,15 @@ export function useCameraSync(
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Camera position sync — uses camera.changed (fires only on meaningful movement)
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line react-hooks/immutability
     useEffect(() => {
-        if (!viewer || viewer.isDestroyed() || !viewer.scene || !viewer.camera || !isReady) return;
+        if (!viewer || viewer.isDestroyed() || !viewer.scene || !viewer.camera || !isReady)
+            return;
 
         // Set the threshold for camera.changed to fire
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/immutability
         viewer.camera.percentageChanged = CAMERA_PERCENTAGE_CHANGED;
 
         const updateStore = () => {

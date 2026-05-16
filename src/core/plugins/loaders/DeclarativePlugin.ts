@@ -81,6 +81,8 @@ export class DeclarativePlugin implements WorldPlugin {
             const data = await res.json();
             return this.parseResponse(data);
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(`[DeclarativePlugin:${this.id}] Fetch error:`, err);
             return [];
         }

@@ -83,6 +83,8 @@ class PluginManager {
      */
     async registerPlugin(plugin: WorldPlugin): Promise<void> {
         if (this.plugins.has(plugin.id)) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn(`[PluginManager] Plugin "${plugin.id}" already registered`);
             return;
         }
@@ -119,6 +121,8 @@ class PluginManager {
         const edition = (process.env.NEXT_PUBLIC_WWV_EDITION || "local") as "local" | "cloud" | "demo";
 
         if (Object.keys(envVars).length > 0) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.debug(`[PluginManager] Injected ${Object.keys(envVars).length} custom env vars into "${plugin.id}"`);
         }
 
@@ -173,6 +177,8 @@ class PluginManager {
         try {
             await plugin.initialize(context);
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(`[PluginManager] Failed to initialize "${plugin.id}":`, err);
         }
 
@@ -213,13 +219,19 @@ class PluginManager {
      */
     async enablePlugin(pluginId: string): Promise<void> {
         const start = performance.now();
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[PluginManager] enablePlugin called for ${pluginId}`);
         // Ensure local manifest is fetched so we don't accidentally fall back to cloud if toggled too fast
         await fetchLocalEngineManifest();
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[PluginManager] Manifest fetched for ${pluginId}. Took ${(performance.now() - start).toFixed(2)}ms`);
 
         const managed = this.plugins.get(pluginId);
         if (!managed) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(`[PluginManager] Plugin ${pluginId} not found in managed plugins`);
             return;
         }
@@ -241,6 +253,8 @@ class PluginManager {
         }
 
         pollingManager.start(pluginId);
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[PluginManager] Emitting layerToggled true for ${pluginId}. Total setup took ${(performance.now() - start).toFixed(2)}ms`);
         dataBus.emit("layerToggled", { pluginId, enabled: true });
     }
@@ -253,15 +267,21 @@ class PluginManager {
      * @param pluginId - The unique identifier of the plugin to disable.
      */
     disablePlugin(pluginId: string): void {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[PluginManager] disablePlugin called for ${pluginId}`);
         const managed = this.plugins.get(pluginId);
         if (!managed) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(`[PluginManager] Plugin ${pluginId} not found during disable`);
             return;
         }
         managed.enabled = false;
         managed.entities = [];
         pollingManager.stop(pluginId);
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[PluginManager] Emitting layerToggled false for ${pluginId}`);
         dataBus.emit("layerToggled", { pluginId, enabled: false });
         dataBus.emit("dataUpdated", { pluginId, entities: [] });
@@ -401,6 +421,8 @@ class PluginManager {
     async loadFromManifest(manifest: PluginManifest): Promise<void> {
         const plugin = await loadPluginFromManifest(manifest);
         if (manifest.id && plugin.id !== manifest.id) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn(`[PluginManager] Overriding plugin ID from internal '${plugin.id}' to manifest ID '${manifest.id}'`);
             plugin.id = manifest.id;
         }

@@ -81,7 +81,9 @@ export async function GET(req: NextRequest) {
             contentType: response.headers.get("content-type"),
             latencyMs: Date.now() - startTime
         });
-    } catch (error: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
         const realError = error.cause || error;
         const code = realError?.code || error?.code || realError?.name || error?.name;
 

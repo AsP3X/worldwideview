@@ -28,9 +28,11 @@ export interface DataConfig {
         realtimeStreaming: boolean;
         clusteringEnabled: boolean;
         showTimelineHighlight: boolean;
-    };
+    }
     /** Generic storage for plugin-specific settings. */
-    pluginSettings: Record<string, any>;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pluginSettings: Record<string, any>
     /** Cryptographic license key for paid tiers. */
     licenseKey: string | null;
     /** The active subscription tier of the user. */
@@ -78,9 +80,11 @@ export interface ConfigSlice {
     /** Updates one or more map rendering fields and persists layer choice to localStorage. */
     updateMapConfig: (config: Partial<MapConfig>) => void;
     /** Overrides the default polling interval for a specific plugin. */
-    setPollingInterval: (pluginId: string, intervalMs: number) => void;
+    setPollingInterval: (pluginId: string, intervalMs: number) => void
     /** Updates internal settings stored for a specific plugin. */
-    updatePluginSettings: (pluginId: string, settings: any) => void;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    updatePluginSettings: (pluginId: string, settings: any) => void
 }
 
 export const createConfigSlice: StateCreator<AppStore, [], [], ConfigSlice> = (set) => ({

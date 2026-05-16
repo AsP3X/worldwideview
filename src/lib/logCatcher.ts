@@ -13,10 +13,20 @@ const MAX_LOGS = 500;
 let isInitialized = false;
 
 // Store original console methods so we don't cause infinite loops
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line no-console
 const originalLog = console.log;
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line no-console
 const originalWarn = console.warn;
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line no-console
 const originalError = console.error;
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line no-console
 const originalInfo = console.info;
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line no-console
 const originalDebug = console.debug;
 
 export function initLogCatcher() {
@@ -31,6 +41,8 @@ export function initLogCatcher() {
     ];
 
     levels.forEach(({ name, original }) => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console, @typescript-eslint/no-explicit-any
         console[name] = (...args: any[]) => {
             // Forward to original console
             original.apply(console, args);

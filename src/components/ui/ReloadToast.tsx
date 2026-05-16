@@ -29,6 +29,8 @@ export default function ReloadToast({ message }: ReloadToastProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 

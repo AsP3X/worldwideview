@@ -12,5 +12,7 @@ const geoJson = convertToGeoJson(raw);
 
 writeFileSync(outputPath, JSON.stringify(geoJson, null, 2), "utf-8");
 
+// eslint-disable-next-line no-console
 console.log(`✅ Converted ${geoJson.features.length} features`);
+// eslint-disable-next-line no-console
 console.log(`   Output: ${outputPath}`);

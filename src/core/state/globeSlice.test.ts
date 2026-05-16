@@ -9,6 +9,8 @@ describe('globeSlice', () => {
 
     beforeEach(() => {
         // Create an isolated vanilla store specifically for this slice
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         store = createStore<GlobeSlice>((set, get, api) => createGlobeSlice(set as any, get as any, api as any));
     });
 

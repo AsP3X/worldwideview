@@ -15,6 +15,8 @@ describe('dataSlice', () => {
 
     beforeEach(() => {
         store = createStore<MockAppStore>((set, get, api) => {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const dataSlice = createDataSlice(set as any, get as any, api as any);
             return {
                 ...dataSlice,
@@ -36,10 +38,14 @@ describe('dataSlice', () => {
 
     it('updates selectedEntity if new data for the same entity arrives', () => {
         // Initial selected entity
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const oldEntity = { id: 'e1', pluginId: 'plugin-a', name: 'Old Name' } as any as GeoEntity;
         store.setState({ selectedEntity: oldEntity });
 
         // New data arrives with updated name
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const freshEntity = { id: 'e1', pluginId: 'plugin-a', name: 'New Name' } as any as GeoEntity;
         store.getState().setEntities('plugin-a', [freshEntity]);
 
@@ -47,6 +53,8 @@ describe('dataSlice', () => {
     });
 
     it('does not update selectedEntity if new data does not contain it', () => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const oldEntity = { id: 'e1', pluginId: 'plugin-a', name: 'Old Name' } as any as GeoEntity;
         store.setState({ selectedEntity: oldEntity });
 

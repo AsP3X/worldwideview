@@ -77,7 +77,9 @@ export function handleEntitySelection(
                     color: Color.fromCssColorString(trailColor).withAlpha(0.2),
                     dashLength: 16,
                 }),
-            } as any,
+            } as // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            any,
         });
     }
 }

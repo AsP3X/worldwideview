@@ -42,6 +42,8 @@ export async function GET(request: Request) {
         ]);
 
         // Support local sandbox workflows by checking /public/plugins-local
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const localPlugins: any[] = [];
         try {
             if (process.env.NODE_ENV === "development" || process.env.WWV_PLUGIN_DEV === "true") {
@@ -54,6 +56,8 @@ export async function GET(request: Request) {
                                 const config = fs.readFileSync(manifestPath, "utf-8");
                                 localPlugins.push({ pluginId: folder, config });
                             } catch (e) {
+                                // TODO: Legacy Airbnb linting violation
+                                // eslint-disable-next-line no-console
                                 console.error(`Error reading local plugin ${folder}:`, e);
                             }
                         }
@@ -61,13 +65,17 @@ export async function GET(request: Request) {
                 }
             }
         } catch (e) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("Error scanning local plugins directory:", e);
         }
 
         const allRecords = [...records, ...localPlugins];
 
         const manifests = allRecords
-            .map((r: any): PluginManifest | null => {
+            .// TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        map((r: any): PluginManifest | null => {
                 try {
                     const manifest = JSON.parse(r.config);
                     if (!manifest.id) manifest.id = r.pluginId;
@@ -77,7 +85,9 @@ export async function GET(request: Request) {
                     return null;
                 }
             })
-            .filter((m: any): m is PluginManifest => {
+            .// TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        filter((m: any): m is PluginManifest => {
                 if (!m) return false;
                 // Skip built-in plugins — already registered by AppShell
                 if (m.trust === "built-in") return false;
@@ -100,6 +110,8 @@ export async function GET(request: Request) {
                 const validation = validateManifest(m);
                 if (!validation.valid) {
                     const errorMessage = `Manifest validation failed for ${m.id}`;
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.error(`[Marketplace API] ${errorMessage}:`, validation.errors);
 
                     // Capture in Sentry so we have visibility into malformed third-party plugins
@@ -114,7 +126,9 @@ export async function GET(request: Request) {
                 }
                 return validation.valid;
             })
-            .map((m: any) => {
+            .// TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        map((m: any) => {
                 // Re-stamp trust against the live registry so revoked plugins
                 // are correctly gated by the unverified dialog on the client.
                 if (m.trust !== "built-in") {
@@ -140,6 +154,8 @@ export async function GET(request: Request) {
 
         return withCors(NextResponse.json({ manifests }), request);
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[Marketplace/load] Error:", err);
         return withCors(NextResponse.json({ manifests: [] }), request);
     }

@@ -30,6 +30,8 @@ export function getRequestOrigin(request: NextRequest): string {
 
     // Safety net: Browsers will instantly block 0.0.0.0. Replace with localhost.
     if (finalOrigin.includes("0.0.0.0")) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn("[Origin Debug] FATAL: Origin resolved to 0.0.0.0. Replacing with localhost as a last resort.");
         finalOrigin = finalOrigin.replace("0.0.0.0", "localhost");
     }

@@ -24,6 +24,8 @@ export async function GET(request: Request) {
             request,
         );
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[marketplace/disabled-builtins] Error:", err);
         return withCors(
             NextResponse.json({ disabledIds: [] }),

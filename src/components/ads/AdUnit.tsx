@@ -47,6 +47,8 @@ export function AdUnit({
                         (window.adsbygoogle = window.adsbygoogle || []).push({});
                         pushed.current = true;
                     } catch (err) {
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line no-console
                         console.error("[AdUnit] AdSense push error:", err);
                     }
                 }

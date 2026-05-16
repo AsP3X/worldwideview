@@ -8,14 +8,20 @@ export const configCommand = new Command('config')
   .argument('<value>', 'Config value (e.g., your-username)')
   .action((action, key, value) => {
     if (action !== 'set') {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.error(`[wwv-cli] Unknown config action: ${action}`);
       process.exit(1);
     }
 
     if (key === 'org') {
       saveConfig({ org: value });
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log(`[wwv-cli] Successfully set default organization to @${value}`);
     } else {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.error(`[wwv-cli] Unknown config key: ${key}. Valid keys: org`);
       process.exit(1);
     }

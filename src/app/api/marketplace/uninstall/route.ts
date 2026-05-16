@@ -50,6 +50,8 @@ export async function POST(request: Request) {
 
         return withCors(NextResponse.json({ status: "uninstalled", pluginId }), request);
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[marketplace/uninstall] Error:", err);
         return withCors(
             NextResponse.json({ error: "Uninstall failed" }, { status: 500 }),

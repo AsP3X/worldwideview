@@ -21,6 +21,8 @@ export async function GET(request: Request) {
         for (const [k, v] of Object.entries(headers)) res.headers.set(k, v);
         return res;
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[setup-status] Database error:", err);
         const res = NextResponse.json(
             { error: "database_unavailable", edition },

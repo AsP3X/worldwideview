@@ -16,6 +16,8 @@ import type { PluginManifest } from "./PluginManifest";
  * @returns A sanitized and properly structured PluginManifest object.
  * @throws Error if the raw input is not a valid JSON object.
  */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseWwvManifest(rawManifest: any): PluginManifest {
     if (!rawManifest || typeof rawManifest !== "object") {
         throw new Error("Manifest must be a JSON object");

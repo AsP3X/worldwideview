@@ -12,6 +12,7 @@ const certPath = path.join(process.cwd(), 'data', 'localhost.crt');
 const keyPath = path.join(process.cwd(), 'data', 'localhost.key');
 
 if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
+  // eslint-disable-next-line no-console
   console.error('[HTTPS Proxy] Certificates not found. Proxy will not start.');
   process.exit(1);
 }
@@ -38,6 +39,7 @@ const server = https.createServer(options, (req, res) => {
   });
 
   proxyReq.on('error', (e) => {
+    // eslint-disable-next-line no-console
     console.error(`[HTTPS Proxy] Error proxying request to ${req.url}:`, e.message);
     res.writeHead(502);
     res.end('Bad Gateway');
@@ -47,5 +49,6 @@ const server = https.createServer(options, (req, res) => {
 });
 
 server.listen(listenPort, '0.0.0.0', () => {
+  // eslint-disable-next-line no-console
   console.log(`[HTTPS Proxy] Secure bridge listening on https://0.0.0.0:${listenPort} (forwarding to http://127.0.0.1:${targetPort})`);
 });

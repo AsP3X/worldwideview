@@ -16,12 +16,15 @@ const EXAMPLE = resolve(ROOT, ".env.example");
 const TARGET = resolve(ROOT, ".env");
 
 if (existsSync(TARGET)) {
+    // eslint-disable-next-line no-console
     console.log("✅ .env already exists — skipping setup.");
+    // eslint-disable-next-line no-console
     console.log("   Delete it and re-run if you want to regenerate.");
     process.exit(0);
 }
 
 if (!existsSync(EXAMPLE)) {
+    // eslint-disable-next-line no-console
     console.error("❌ .env.example not found. Are you in the right directory?");
     process.exit(1);
 }
@@ -48,6 +51,9 @@ content = content
 
 writeFileSync(TARGET, content, "utf8");
 
+// eslint-disable-next-line no-console
 console.log("✅ .env created with a generated AUTH_SECRET.");
+// eslint-disable-next-line no-console
 console.log("   Fill in any optional API keys (Cesium, Bing, OpenSky, etc.)");
+// eslint-disable-next-line no-console
 console.log("   then run: npm run dev");

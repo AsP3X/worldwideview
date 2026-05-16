@@ -124,7 +124,9 @@ export async function fetchAdapter(adapter: CameraAdapter): Promise<CameraFeatur
             fetchedAt: new Date(now).toISOString(),
         });
         return data;
-    } catch (e: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (e: any) {
         const errMsg = e?.message ?? String(e);
         if (c) {
             cache.set(adapter.id, { ...c, error: errMsg });

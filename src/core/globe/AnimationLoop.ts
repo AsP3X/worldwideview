@@ -273,6 +273,8 @@ isFaded: boolean
 }
 
 /** Hide label to save render time, but do NOT remove it. Creating/Removing labels triggers massive WebGL buffer rewrites. */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function hideLabel(item: AnimatableItem, labelsCollection: any): void {
     if (!item.labelPrimitive || item.labelPrimitive.isDestroyed?.()) return;
     if (item.labelPrimitive.show !== false) item.labelPrimitive.show = false;

@@ -22,6 +22,8 @@ interface GlobalsMap {
  * 
  * @returns {any} A Vite plugin object.
  */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function wwvPluginGlobals(): any {
     const HOST_MAPPINGS: GlobalsMap = {
         "react": "React",

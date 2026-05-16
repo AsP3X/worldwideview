@@ -31,6 +31,8 @@ export function useEntityRendering(
         if (!viewer || !isReady || viewer.isDestroyed()) return;
 
         viewer.scene.debugShowFramesPerSecond = sceneSettings.showFps;
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/immutability
         viewer.resolutionScale = sceneSettings.resolutionScale;
 
         // Apply Anti-Aliasing Mode
@@ -55,6 +57,8 @@ export function useEntityRendering(
         }
         viewer.shadowMap.enabled = sceneSettings.shadowsEnabled;
         viewer.scene.globe.enableLighting = sceneSettings.enableLighting;
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const primitives = viewer.scene.primitives as any;
         for (let i = 0; i < primitives.length; i++) {
             const p = primitives.get(i);
@@ -90,6 +94,8 @@ export function useEntityRendering(
         // BEFORE Cesium's Camera Tracking (which also runs on clock.onTick) asks for it.
         // This eliminates the 1-frame lag that caused brutal plane jittering against the camera.
         viewer.clock.onTick.addEventListener(updatePositions);
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const tickListeners = (viewer.clock.onTick as any)._listeners;
         if (tickListeners && tickListeners.length > 1) {
             const loopListener = tickListeners.pop();

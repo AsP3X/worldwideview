@@ -9,6 +9,8 @@ const OVERPASS_MIRRORS = [
 ];
 
 async function tryMirror(urlStr: string, query: string, timeoutMs: number) {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new Promise<any>((resolve, reject) => {
         const url = new URL(urlStr);
         const bodyStr = `data=${encodeURIComponent(query)}`;
@@ -56,11 +58,15 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing query" }, { status: 400 });
         }
 
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log(`[OSMSearchProxy] Querying Overpass API mirrors... (length: ${query.length})`);
 
         let lastError = null;
         for (const mirror of OVERPASS_MIRRORS) {
             try {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.log(`[OSMSearchProxy] Trying mirror: ${mirror}`);
                 const res = await tryMirror(mirror, query, 25000); // 25s per mirror
 
@@ -70,12 +76,16 @@ export async function POST(req: Request) {
                         return NextResponse.json({ data: data.elements });
                     }
                     if (data.remark) {
+                         // TODO: Legacy Airbnb linting violation
+                         // eslint-disable-next-line no-console
                          console.warn(`[OSMSearchProxy] ${mirror} returned remark: ${data.remark}`);
                          // If it's a specific query error (remark), don't bother retrying mirrors
                          return NextResponse.json({ error: data.remark }, { status: 400 });
                     }
                 } else {
                     const text = await res.text();
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.warn(`[OSMSearchProxy] Mirror ${mirror} failed: ${res.status} ${res.statusText}`);
                     lastError = { status: res.status, statusText: res.statusText, details: text };
                     // If it's a 4xx error (except 429), it's probably a bad query, so don't retry
@@ -83,10 +93,20 @@ export async function POST(req: Request) {
                         break;
                     }
                 }
-            } catch (err: any) {
+            } // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            catch (err: any) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn(`[OSMSearchProxy] Mirror ${mirror} threw error:`);
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn(err);
-                if (err instanceof Error) console.warn(err.stack);
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
+                if (err instanceof Error)
+                    // eslint-disable-next-line no-console
+                    console.warn(err.stack);
                 lastError = { status: 500, statusText: "Internal Error", details: String(err && err.message ? err.message : err) };
             }
         }
@@ -95,7 +115,11 @@ export async function POST(req: Request) {
             { error: "All Overpass mirrors failed or timed out. The OSM servers are likely under heavy load." },
             { status: 504 }
         );
-    } catch (e: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (e: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error(`[OSMSearchProxy] Internal error:`, e);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

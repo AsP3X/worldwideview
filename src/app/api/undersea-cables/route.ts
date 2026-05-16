@@ -20,7 +20,11 @@ export async function GET() {
 
         const data = await response.json();
         return NextResponse.json(data);
-    } catch (error: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[UnderseaCablesProxy] Error:", error);
         return NextResponse.json(
             { error: "Failed to proxy request" },

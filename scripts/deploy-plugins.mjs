@@ -19,6 +19,7 @@ for (const dir of dirs) {
         const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
         
         if (!pkg.worldwideview) {
+            // eslint-disable-next-line no-console
             console.log(`Skipped ${dir} - No worldwideview metadata in package.json`);
             continue;
         }
@@ -45,8 +46,10 @@ for (const dir of dirs) {
         
         fs.copyFileSync(distPath, path.join(targetDir, "frontend.mjs"));
         fs.writeFileSync(path.join(targetDir, "plugin.json"), JSON.stringify(manifest, null, 2));
+        // eslint-disable-next-line no-console
         console.log(`Deployed ${publicName} to public/plugins`);
     } else {
+        // eslint-disable-next-line no-console
         console.log(`Skipped ${dir} - dist or package.json not found.`);
     }
 }

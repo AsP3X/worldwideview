@@ -12,9 +12,11 @@ export default {
     
     // Lifecycle
     initialize: async (ctx) => {
+        // eslint-disable-next-line no-console
         console.log("[e2e-mock-plugin] Initialized");
     },
     destroy: () => {
+        // eslint-disable-next-line no-console
         console.log("[e2e-mock-plugin] Destroyed");
     },
 
@@ -48,6 +50,7 @@ export default {
         const React = globalThis.__WWV_HOST__.React;
         
         if (!React) {
+            // eslint-disable-next-line no-console
             console.error("[e2e-mock-plugin] Failed to resolve React from __WWV_HOST__");
             return null;
         }

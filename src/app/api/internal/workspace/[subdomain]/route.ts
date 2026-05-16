@@ -26,6 +26,8 @@ export async function GET(
 
         return NextResponse.json(workspace);
     } catch (e) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("Failed to lookup workspace", e);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

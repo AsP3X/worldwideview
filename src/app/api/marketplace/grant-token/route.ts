@@ -73,6 +73,8 @@ export async function GET(request: NextRequest) {
         // Token in fragment — never sent to server in logs/referer
         return NextResponse.redirect(`${dest.toString()}#token=${token}`);
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[grant-token] Unexpected error:", err);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

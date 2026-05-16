@@ -9,6 +9,8 @@ vi.mock("@/core/edition", () => ({
 }));
 
 describe("authConfig", () => {
+  // TODO: Legacy Airbnb linting violation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const authorized = authConfig.callbacks?.authorized as any;
 
   it("should allow access to API routes without auth", () => {

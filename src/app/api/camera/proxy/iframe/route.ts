@@ -82,6 +82,8 @@ export async function GET(req: NextRequest) {
         });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : "Unknown error";
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[IframeProxy] Error:", message);
         return NextResponse.json(
             { error: "Failed to proxy iframe" },

@@ -54,6 +54,7 @@ const shutdown = () => {
   if (isShuttingDown) return;
   isShuttingDown = true;
 
+  // eslint-disable-next-line no-console
   console.log('\n🛑 Shutting down dev servers...');
 
   // Forcefully kill the process tree of each command cross-platform
@@ -64,11 +65,14 @@ const shutdown = () => {
   });
 
   if (teardownDbOnExit) {
+    // eslint-disable-next-line no-console
     console.log('📦 Tearing down local PostgreSQL database...');
     try {
       execSync('docker compose stop db', { stdio: 'inherit' });
+      // eslint-disable-next-line no-console
       console.log('✅ Local database stopped.');
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('⚠️ Failed to stop database container.');
     }
   }

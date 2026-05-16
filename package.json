@@ -21,6 +21,7 @@
     "test:e2e": "playwright test",
     "test:mutate": "stryker run",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "db:reset": "npx prisma migrate reset --force",
     "db:prune": "node scripts/db-prune.mjs",
     "generate": "prisma generate"

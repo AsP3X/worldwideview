@@ -85,6 +85,8 @@ export const CameraStream: React.FC<CameraStreamProps> = ({
     const handlePopOut = (e: React.MouseEvent) => {
         e.stopPropagation();
         addFloatingStream({
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line react-hooks/purity
             id: id || `stream-${Math.random().toString(36).substr(2, 9)}`,
             streamUrl: activeStreamUrl,
 isIframe,

@@ -30,7 +30,9 @@ const lodScratchHPR = new HeadingPitchRoll();
 const lodScratchMatrix = new Matrix4();
 
 interface ActiveModel {
-    model: any;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    model: any
     entityId: string;
     distance: number;
 }

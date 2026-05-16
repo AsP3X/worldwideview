@@ -14,6 +14,8 @@ export async function GET(request: Request) {
         const installedPlugins = await getInstalledPlugins();
 
         // Exclude built-in versions, only check genuine semver strings or unverified records.
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatablePlugins = installedPlugins.filter((p: any) => p.version !== "built-in");
 
         if (updatablePlugins.length === 0) {
@@ -51,6 +53,8 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ updates });
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[marketplace/check-updates] Error:", err);
         return NextResponse.json(
             { error: "Failed to check for updates" },

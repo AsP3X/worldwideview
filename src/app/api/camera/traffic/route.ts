@@ -31,7 +31,11 @@ export async function GET(req: NextRequest) {
             total: cameras.length,
             sources,
         });
-    } catch (error: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[TrafficCameras] Error:", error);
         return NextResponse.json(
             { error: "Failed to fetch traffic cameras" },

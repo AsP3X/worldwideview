@@ -21,10 +21,15 @@ const missing = checks.filter(c => !process.env[c.name]);
 if (missing.length === 0) process.exit(0);
 
 const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
+// eslint-disable-next-line no-console
 console.warn(yellow("\n⚠  Build-time env vars not set:"));
 for (const c of missing) {
+    // eslint-disable-next-line no-console
     console.warn(yellow(`\n  ${c.name}`));
+    // eslint-disable-next-line no-console
     console.warn(`    ${c.why}`);
+    // eslint-disable-next-line no-console
     console.warn(`    Fix: ${c.how}`);
 }
+// eslint-disable-next-line no-console
 console.warn(yellow("\nContinuing build — these are warnings, not errors.\n"));

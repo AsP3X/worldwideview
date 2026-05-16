@@ -57,13 +57,21 @@ export function DataBusSubscriber() {
 
         const unsubToggle = dataBus.on("layerToggled", ({ pluginId, enabled }) => {
             const t0 = performance.now();
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.debug(`[DataBusSubscriber] layerToggled event received for ${pluginId}, enabled: ${enabled}`);
             const engineUrl = resolveEngineUrl(pluginId);
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.debug(`[DataBusSubscriber] Resolved engine URL for ${pluginId} to ${engineUrl}. Took ${(performance.now() - t0).toFixed(2)}ms`);
             if (enabled) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.debug(`[DataBusSubscriber] Calling wsClient.subscribe(${pluginId}, ${engineUrl})`);
                 wsClient.subscribe(pluginId, engineUrl);
             } else {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.debug(`[DataBusSubscriber] Calling wsClient.unsubscribe(${pluginId}, ${engineUrl})`);
                 wsClient.unsubscribe(pluginId, engineUrl);
             }

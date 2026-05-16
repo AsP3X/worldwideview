@@ -109,6 +109,8 @@ export class FrustumRenderer {
         const corners = [edges.topLeft, edges.topRight, edges.bottomLeft, edges.bottomRight];
         const existing = this.entityMap.get(id)!;
         for (let i = 0; i < 4; i++) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             existing[i].polyline!.positions = toPositions(edges.apex, corners[i]) as any;
         }
     }

@@ -104,6 +104,8 @@ export async function GET(request: NextRequest) {
         try {
             await upsertPlugin(pluginId, version, JSON.stringify(manifest));
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("[install-redirect] upsertPlugin failed:", err);
             if (isSafeRedirect(redirectTo)) {
                 const errorUrl = new URL(redirectTo);
@@ -128,6 +130,8 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(`${successUrl.toString()}#token=${token}`);
     } catch (err) {
         // Top-level catch: log and redirect to marketplace with error, don't expose raw 500
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[install-redirect] Unexpected error:", err);
         if (isSafeRedirect(redirectTo)) {
             const errorUrl = new URL(redirectTo);

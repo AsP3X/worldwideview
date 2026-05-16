@@ -51,7 +51,11 @@ export async function GET(req: NextRequest) {
                 { status: 502 },
             );
         }
-    } catch (error: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[CameraProxy] Error fetching target URL:", error);
         const status = error.message.includes("SSRF Error") ? 403 : 500;
         return NextResponse.json(

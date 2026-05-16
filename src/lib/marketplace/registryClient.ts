@@ -43,6 +43,8 @@ export async function getVerifiedPluginIds(): Promise<Set<string>> {
     const data = JSON.stringify(payload);
 
     if (!verifySignature(data, signature)) {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.error("[RegistryClient] Signature verification failed");
       return cache?.plugins ?? new Set();
     }
@@ -51,6 +53,8 @@ export async function getVerifiedPluginIds(): Promise<Set<string>> {
     cache = { plugins, expiresAt: Date.now() + CACHE_TTL_MS };
     return plugins;
   } catch (err) {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.error("[RegistryClient] Failed to fetch registry:", err);
     return cache?.plugins ?? new Set();
   }

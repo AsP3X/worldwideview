@@ -78,6 +78,8 @@ async function tieredFallback(ionAssetId: number, googleLyrs: string) {
     try {
         return createGoogleProvider(googleLyrs);
     } catch (googleErr) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn("[ImageryProvider] Google tiles failed, trying Bing via Ion:", googleErr);
     }
 
@@ -85,6 +87,8 @@ async function tieredFallback(ionAssetId: number, googleLyrs: string) {
     try {
         return await IonImageryProvider.fromAssetId(ionAssetId);
     } catch (ionErr) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn("[ImageryProvider] Ion/Bing failed, falling back to OSM:", ionErr);
     }
 

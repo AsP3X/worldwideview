@@ -31,6 +31,8 @@ const HUB_BG_RADIUS = 14;
 const scratchOffset = new Cartesian2();
 
 /** Tracks the dedicated textual badge primitive for each stack. */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const hubBillboards = new Map<string, any>();
 const clusterIconCache = new Map<string, string>();
 
@@ -109,6 +111,8 @@ function tickSingle(stack: EntityStack, now: number, billboards: BillboardCollec
     const isRestingCollapsed = stack.state === "collapsed";
 
     if (!isRestingCollapsed) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (stack as any)._enforcedHidden = false;
         // Animate ALL children (no one is left behind!)
         for (let i = 0; i < children.length; i++) {
@@ -145,11 +149,15 @@ function tickSingle(stack: EntityStack, now: number, billboards: BillboardCollec
         }
     } else {
         // Enforce the collapsed hidden state exactly once to catch newly clustered primitives
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (!(stack as any)._enforcedHidden) {
             for (let i = 0; i < children.length; i++) {
                 const prim = children[i].primitive;
                 if (prim && !prim.isDestroyed?.() && prim.show) prim.show = false;
             }
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (stack as any)._enforcedHidden = true;
         }
     }
@@ -168,7 +176,11 @@ function manageDedicatedHub(stack: EntityStack, billboards: BillboardCollection)
 
     // Check if the hubItem's baseColor has changed since we last cached it
     const currentBaseColor = stack.hubItem.baseColor?.toCssColorString() ?? "#ffffff";
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((stack.hubItem as any)._cachedCssColor !== currentBaseColor) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (stack.hubItem as any)._cachedCssColor = currentBaseColor;
     }
 

@@ -119,6 +119,8 @@ export interface UISlice {
 }
 
 export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set) => ({
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     theme: typeof window !== "undefined" ? (localStorage.getItem("wwv-theme") as any) || "black" : "black",
     leftSidebarOpen: true,
     rightSidebarOpen: false,

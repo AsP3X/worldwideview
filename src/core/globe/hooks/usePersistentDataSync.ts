@@ -15,6 +15,8 @@ export function usePersistentDataSync() {
                 updateMapConfig(saved);
             }
         } catch (e) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn("[GlobeView] Failed to load graphics settings from cookie", e);
         }
     }, [updateMapConfig]);
@@ -29,6 +31,8 @@ export function usePersistentDataSync() {
                     initFavorites(saved);
                 }
             } catch (e) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn("[GlobeView] Failed to load favorites from cookie", e);
             }
         } else {
@@ -40,6 +44,8 @@ export function usePersistentDataSync() {
                 })
                 .then((data) => {
                     if (Array.isArray(data)) {
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const mappedFavorites = data.map((item: any) => ({
                             id: item.entityId, // Restore entity property matching
                             pluginId: item.pluginId,

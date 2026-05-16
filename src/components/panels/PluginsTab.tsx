@@ -160,6 +160,8 @@ export function PluginsTab() {
     }, []);
 
     useEffect(() => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadPlugins();
     }, [loadPlugins]);
 

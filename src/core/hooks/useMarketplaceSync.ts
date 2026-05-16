@@ -72,6 +72,8 @@ export function useMarketplaceSync(hostReady: boolean) {
         }
 
         try {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log(`[MarketplaceSync] Loading manifest: ${manifest.id}`);
             await pluginManager.loadFromManifest(manifest);
 
@@ -92,8 +94,12 @@ export function useMarketplaceSync(hostReady: boolean) {
             }
 
             loadedIds.current.add(manifest.id);
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log(`[MarketplaceSync] Hot-loaded plugin "${manifest.id}"`);
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(`[MarketplaceSync] Failed to load "${manifest.id}":`, err);
             const store = useStore.getState();
             if (store.showErrorToast) {
@@ -107,6 +113,8 @@ export function useMarketplaceSync(hostReady: boolean) {
         try {
             const res = await fetch("/api/marketplace/load");
             const json = await res.json();
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.debug(`[MarketplaceSync] Received marketplace manifest json`);
 
             if (!res.ok) {
@@ -143,6 +151,8 @@ export function useMarketplaceSync(hostReady: boolean) {
                 });
             }
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("[MarketplaceSync] Sync failed:", err);
         }
     }
@@ -182,6 +192,8 @@ export function useMarketplaceSync(hostReady: boolean) {
 
     useEffect(() => {
         if (!hostReady) return;
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         syncPlugins();
 
         const handleFocus = () => { syncPlugins(); };

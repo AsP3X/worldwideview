@@ -102,6 +102,8 @@ export function FeedbackDialog() {
 
             stream.getTracks().forEach((t) => t.stop());
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("Screen capture failed or was cancelled:", err);
         } finally {
             setTakingScreenshot(false);
@@ -153,6 +155,8 @@ export function FeedbackDialog() {
             setScreenshots([]);
             setFeedbackDialogOpen(false);
         } catch (error) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("Failed to submit feedback:", error);
             showErrorToast("Failed to submit feedback. Please try again later.");
         } finally {

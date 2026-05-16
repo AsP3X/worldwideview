@@ -68,6 +68,7 @@ export async function buildPlugin({ dir, manifest, pluginDir }) {
         const tsxEntry = devEntry.replace(".ts", ".tsx");
         entryFile = path.join(pluginDir, tsxEntry);
         if (!fs.existsSync(entryFile)) {
+            // eslint-disable-next-line no-console
             console.warn(`[sync] ⚠ No entry file found for ${dir}, skipping`);
             return false;
         }
@@ -109,6 +110,7 @@ export async function buildPlugin({ dir, manifest, pluginDir }) {
         });
         return true;
     } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(`[sync] ❌ Build failed for ${dir}:`, err.message);
         return false;
     }
@@ -121,6 +123,7 @@ export function syncToPublic({ dir, manifest, pluginDir }) {
     const distMap = path.join(pluginDir, "dist", "frontend.mjs.map");
 
     if (!fs.existsSync(distFile)) {
+        // eslint-disable-next-line no-console
         console.warn(`[sync] ⚠ No dist for ${dir}, skipping sync`);
         return;
     }
@@ -151,6 +154,7 @@ export function syncToPublic({ dir, manifest, pluginDir }) {
         JSON.stringify(pluginJson, null, 2)
     );
 
+    // eslint-disable-next-line no-console
     console.log(`[sync] ✅ ${publicName} → public/plugins-local/${publicName}/`);
 }
 
@@ -161,6 +165,7 @@ function cleanStale(activeIds) {
     for (const dir of fs.readdirSync(OUTPUT_DIR)) {
         if (!activeSet.has(dir)) {
             fs.rmSync(path.join(OUTPUT_DIR, dir), { recursive: true, force: true });
+            // eslint-disable-next-line no-console
             console.log(`[sync] 🗑  Removed stale plugin: ${dir}`);
         }
     }
@@ -170,11 +175,13 @@ export async function syncAll() {
     const plugins = discoverLocalPlugins();
 
     if (plugins.length === 0) {
+        // eslint-disable-next-line no-console
         console.log("[sync] No local plugins found.");
         cleanStale([]);
         return;
     }
 
+    // eslint-disable-next-line no-console
     console.log(`[sync] Found ${plugins.length} local plugin(s): ${plugins.map(p => p.dir).join(", ")}`);
 
     for (const plugin of plugins) {
@@ -190,6 +197,7 @@ export async function syncAll() {
 const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
 if (isDirectRun) {
     syncAll().catch(err => {
+        // eslint-disable-next-line no-console
         console.error("[sync] Fatal:", err);
         process.exit(1);
     });

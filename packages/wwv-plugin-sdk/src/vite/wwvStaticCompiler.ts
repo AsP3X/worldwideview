@@ -12,8 +12,12 @@ import path from "path";
  * - Converts features into GeoEntity objects
  * - Renders with the manifest's rendering config
  */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function wwvStaticCompiler(): any {
     let pluginRoot = "";
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let manifest: any = null;
     let generatedEntry = "";
 
@@ -21,6 +25,8 @@ export function wwvStaticCompiler(): any {
         name: "wwv-static-compiler",
         enforce: "pre" as const,
 
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         config(userConfig: any) {
             pluginRoot = userConfig.root || process.cwd();
             const pkgPath = path.join(pluginRoot, "package.json");
@@ -71,6 +77,8 @@ export function wwvStaticCompiler(): any {
     };
 }
 
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateStaticPluginSource(manifest: any): string {
     const pluginId = manifest.id;
     const pluginName = manifest.name || pluginId;

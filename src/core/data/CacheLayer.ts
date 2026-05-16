@@ -31,6 +31,8 @@ class CacheLayer {
                 resolve();
             };
             request.onerror = () => {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn("[CacheLayer] IndexedDB unavailable, using memory only");
                 resolve();
             };

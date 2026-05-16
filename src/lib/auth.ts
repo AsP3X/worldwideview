@@ -60,7 +60,9 @@ export const {
     adapter: isCloud ? SupabaseAdapter({
         url: process.env.NEXT_PUBLIC_SUPABASE_URL || "http://dummy.supabase.co",
         secret: process.env.SUPABASE_SERVICE_ROLE_KEY || "dummy",
-    }) as any : undefined,
+    }) as // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any : undefined,
     providers: [localCredentialsProvider],
     callbacks: {
         ...authConfig.callbacks,

@@ -49,6 +49,7 @@ export default defineConfig({
         
         // Add vite.config.ts
         fs.writeFileSync(path.join(packagesDir, dir, "vite.config.ts"), viteConfigContent);
+        // eslint-disable-next-line no-console
         console.log(`Added vite.config.ts to ${dir} (entry: ${entryFile})`);
     }
 }

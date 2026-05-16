@@ -27,6 +27,8 @@ interface HlsPlayerProps {
  */
 export const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, onReady, onError }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const hlsRef = useRef<any>(null);
 
     const cleanup = useCallback(() => {
@@ -79,6 +81,8 @@ export const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, onReady, onError }) =
                 });
             });
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             hls.on(Hls.Events.ERROR, (_: any, data: any) => {
                 if (data.fatal) {
                     const detail = data.details || "unknown error";

@@ -42,7 +42,11 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({ error: "Unsupported extractor platform" }, { status: 400 });
-    } catch (error: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[CameraExtractor] Error:", error.message);
         return NextResponse.json({ error: "Failed to extract stream" }, { status: 500 });
     }

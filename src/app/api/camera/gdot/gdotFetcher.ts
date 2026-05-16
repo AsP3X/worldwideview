@@ -29,6 +29,8 @@ export interface GdotCameraFeature {
 }
 
 /** Convert a raw ArcGIS feature into our GeoJSON format. */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toGeoJsonFeature(raw: any): GdotCameraFeature | null {
     const { attributes: a, geometry: g } = raw;
     if (!g?.x || !g?.y) return null;

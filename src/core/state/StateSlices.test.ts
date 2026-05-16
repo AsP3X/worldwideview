@@ -13,8 +13,14 @@ import { createFilterSlice } from "./filterSlice";
 describe("State Slices", () => {
   describe("GlobeSlice", () => {
     it("should set camera position", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = {};
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (update: any) => { state = { ...state, ...update }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createGlobeSlice(set, () => ({} as any), {} as any);
 
       slice.setCameraPosition(10, 20, 30);
@@ -28,6 +34,8 @@ describe("State Slices", () => {
     it("should toggle layer", () => {
       let state: any = { layers: { p1: { enabled: false } } };
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createLayersSlice(set, () => state as any, {} as any);
 
       slice.toggleLayer("p1");
@@ -35,8 +43,14 @@ describe("State Slices", () => {
     });
 
     it("should init layer if missing", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { layers: {} };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createLayersSlice(set, () => state as any, {} as any);
 
       slice.initLayer("p2", true);
@@ -58,8 +72,14 @@ describe("State Slices", () => {
     });
 
     it("should toggle theme", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { theme: "black" };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createUISlice(set, () => state as any, {} as any);
 
       slice.toggleTheme();
@@ -68,8 +88,14 @@ describe("State Slices", () => {
     });
 
     it("should add floating stream", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { floatingStreams: [] };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createUISlice(set, () => state as any, {} as any);
 
       slice.addFloatingStream({
@@ -86,10 +112,16 @@ describe("State Slices", () => {
         entitiesByPlugin: {},
         selectedEntity: { id: "1", pluginId: "p1", name: "Old Name" }
       };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
       const get = () => state;
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createDataSlice(set, get, {} as any);
 
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newEntities = [{ id: "1", pluginId: "p1", name: "New Name" } as any];
       slice.setEntities("p1", newEntities);
 
@@ -100,8 +132,14 @@ describe("State Slices", () => {
 
   describe("ConfigSlice", () => {
     it("should update data config", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { dataConfig: { cacheEnabled: false } };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createConfigSlice(set, () => ({} as any), {} as any);
 
       slice.updateDataConfig({ cacheEnabled: true });
@@ -109,8 +147,14 @@ describe("State Slices", () => {
     });
 
     it("should set polling interval", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { dataConfig: { pollingIntervals: {} } };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createConfigSlice(set, () => ({} as any), {} as any);
 
       slice.setPollingInterval("p1", 5000);
@@ -120,16 +164,26 @@ describe("State Slices", () => {
 
   describe("FavoritesSlice", () => {
     beforeEach(() => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       global.fetch = vi.fn().mockResolvedValue({ ok: true }) as any;
       vi.stubGlobal("document", { cookie: "" });
     });
 
     it("should add favorite and trigger sync", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { favorites: [] };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (update: any) => { state = { ...state, ...update }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createFavoritesSlice(set, () => state as any, {} as any);
 
       const entity = { id: "e1", pluginId: "p1", label: "Entity 1" };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       slice.addFavorite(entity as any, "Plugin 1");
 
       expect(state.favorites.length).toBe(1);
@@ -144,8 +198,14 @@ describe("State Slices", () => {
 
   describe("TimelineSlice", () => {
     it("should set time window and calculate range", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { timeWindow: "1h", timeRange: null };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (update: any) => { state = { ...state, ...update }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createTimelineSlice(set, () => ({} as any), {} as any);
 
       slice.setTimeWindow("6h");
@@ -157,8 +217,14 @@ describe("State Slices", () => {
 
   describe("FilterSlice", () => {
     it("should set and clear filters", () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let state: any = { filters: {} };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const set = (fn: any) => { state = { ...state, ...fn(state) }; };
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const slice = createFilterSlice(set, () => ({} as any), {} as any);
 
       slice.setFilter("p1", "f1", { type: "boolean", value: true });

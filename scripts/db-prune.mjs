@@ -9,6 +9,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+// eslint-disable-next-line no-console
 console.log('🧹 Starting Garbage Collection for orphaned WorldWideView Docker volumes...');
 
 try {
@@ -23,6 +24,7 @@ try {
   );
 
   if (wwvVolumes.length === 0) {
+    // eslint-disable-next-line no-console
     console.log('✅ No WorldWideView volumes found.');
     process.exit(0);
   }
@@ -50,23 +52,28 @@ try {
     }
 
     if (!activeProjectNames.has(projectName)) {
+      // eslint-disable-next-line no-console
       console.log(`🗑️  Deleting orphaned volume: ${volume}`);
       try {
         execSync(`docker volume rm ${volume}`, { stdio: 'inherit' });
         orphanedCount++;
       } catch (rmError) {
+        // eslint-disable-next-line no-console
         console.warn(`⚠️  Could not remove volume ${volume}. It may still be in use.`);
       }
     }
   }
 
   if (orphanedCount === 0) {
+    // eslint-disable-next-line no-console
     console.log('✅ All existing volumes belong to active worktrees. Nothing to prune.');
   } else {
+    // eslint-disable-next-line no-console
     console.log(`✅ Successfully pruned ${orphanedCount} orphaned volume(s).`);
   }
 
 } catch (error) {
+  // eslint-disable-next-line no-console
   console.error('❌ Failed to prune volumes:', error.message);
   process.exit(1);
 }

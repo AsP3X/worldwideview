@@ -16,6 +16,8 @@ export class SmartFetcher {
      * 1. Direct fetch (Browser GET)
      * 2. Local Server Proxy (Last resort, handles CORS or large payloads)
      */
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     static async fetchJson(url: string): Promise<any> {
         // Step 1: Try Direct Fetch (Fastest)
         try {
@@ -37,6 +39,8 @@ export class SmartFetcher {
         return await localRes.json();
     }
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static async parseResponse(res: Response): Promise<any> {
         // Read as text to support both direct JSON HTTP responses and file download streams
         const text = await res.text();

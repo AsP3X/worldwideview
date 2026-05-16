@@ -115,12 +115,16 @@ export function AgentBusSubscriber() {
                 const msg = JSON.parse(event.data) as AgentMessage;
                 applyAction(msg);
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn("[AgentBus] malformed message", err);
             }
         };
         es.onerror = (err) => {
             // EventSource auto-reconnects on its own with the `retry:` value
             // we send from the server. Just log; don't tear down.
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.debug("[AgentBus] stream error (auto-reconnecting)", err);
         };
 

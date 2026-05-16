@@ -33,8 +33,12 @@ async function globalTeardown(config: FullConfig) {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL || "postgresql://postgres:postgres@127.0.0.1:5432/worldwideview?schema=public" });
   const adapter = new PrismaPg(pool);
   const prisma = new PrismaClient({ adapter });
+  // TODO: Legacy Airbnb linting violation
+  // eslint-disable-next-line no-console
   console.log(`[Teardown] Cleaning up test user: ${TEST_USER_EMAIL}`);
   try {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log(`[Teardown] Cleaning up mock plugin...`);
       await prisma.installedPlugin.deleteMany({
           where: { pluginId: 'e2e-mock-plugin' }
@@ -43,6 +47,8 @@ async function globalTeardown(config: FullConfig) {
         where: { email: TEST_USER_EMAIL },
       });
   } catch (e) {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.error(`[Teardown] Failed to delete test user:`, e);
   } finally {
       await prisma.$disconnect();

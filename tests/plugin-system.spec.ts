@@ -10,8 +10,12 @@ test.describe('Dynamic Plugin System', () => {
   test('successfully discovers, loads, and renders a mock dynamic plugin', async ({ page }) => {
     // Log console messages from the browser
     page.on('console', msg => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log(`[Browser Console] ${msg.type()}: ${msg.text()}`);
       if (msg.type() === 'error') {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log(`[Browser Error] ${msg.location().url}:${msg.location().lineNumber}`);
       }
     });
@@ -29,16 +33,20 @@ test.describe('Dynamic Plugin System', () => {
       // Wait a short time for the dialog to appear
       await installBtn.waitFor({ state: 'visible', timeout: 5000 });
       await installBtn.click();
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log('Clicked "Install Selected" in unverified plugin dialog.');
     } catch (e) {
       // Dialog didn't appear, possibly because it's a verified plugin or already approved
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log('Unverified plugin dialog did not appear.');
     }
 
     // To ensure the UI is in a state where it might be visible,
     // let's check if we need to open the right panel first. Plugins might inject into the right panel.
     const rightToggle = page.locator('[data-testid="panel-toggle-right"]');
-    if (await rightToggle.count() > 0) {
+    if ((await rightToggle.count()) > 0) {
         const isInitiallyOpen = await rightToggle.evaluate((node) => node.classList.contains('panel-toggle-btn--open'));
         if (!isInitiallyOpen) {
             await rightToggle.click();

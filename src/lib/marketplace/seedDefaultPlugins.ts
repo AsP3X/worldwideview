@@ -44,6 +44,8 @@ export async function seedDefaultPlugins(): Promise<void> {
             return;
         }
 
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log(
             `[DefaultPlugins] Fresh install detected — seeding ${DEFAULT_PLUGIN_IDS.length} default plugins…`,
         );
@@ -70,6 +72,8 @@ export async function seedDefaultPlugins(): Promise<void> {
 
                 const validation = validateManifest(manifest);
                 if (!validation.valid) {
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.warn(
                         `[DefaultPlugins] Skipping ${pluginId}: ${validation.errors.join(", ")}`,
                     );
@@ -83,6 +87,8 @@ export async function seedDefaultPlugins(): Promise<void> {
                 );
                 installed += 1;
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn(
                     `[DefaultPlugins] Failed to seed ${pluginId}:`,
                     err,
@@ -91,10 +97,14 @@ export async function seedDefaultPlugins(): Promise<void> {
         }
 
         await markSeeded();
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log(
             `[DefaultPlugins] Seeded ${installed}/${DEFAULT_PLUGIN_IDS.length} plugins`,
         );
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[DefaultPlugins] Seeder failed:", err);
         // Never throw — seeding failure must not block the app
     }
@@ -103,10 +113,14 @@ export async function seedDefaultPlugins(): Promise<void> {
 /** Fetch a plugin manifest from the marketplace API. */
 async function fetchManifest(
     pluginId: string,
-): Promise<Record<string, any> | null> {
+)// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+: Promise<Record<string, any> | null> {
     try {
         const res = await fetch(`${MARKETPLACE_URL}/api/plugins/${pluginId}`);
         if (!res.ok) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn(
                 `[DefaultPlugins] Marketplace returned ${res.status} for ${pluginId}`,
             );
@@ -116,6 +130,8 @@ async function fetchManifest(
         if (!data.id) data.id = pluginId;
         return data;
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn(
             `[DefaultPlugins] Network error fetching ${pluginId}:`,
             err,

@@ -35,6 +35,8 @@ export async function searchLocations(query: string): Promise<SearchSection | nu
             maxScore: results[0].score,
         };
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("Error fetching places:", err);
         return null;
     }

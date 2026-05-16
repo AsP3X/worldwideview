@@ -203,7 +203,9 @@ describe("normalizeToGeoJson", () => {
               expect(result.skippedCount).toBe(0);
               expect(result.collection.features[0].geometry.coordinates).toEqual([lon, lat]);
             }
-          } catch (e: any) {
+          } // TODO: Legacy Airbnb linting violation
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          catch (e: any) {
             // Normalizer explicitly throws if ALL features are skipped
             if (e.message !== "No features with valid geometry found.") {
               throw e;

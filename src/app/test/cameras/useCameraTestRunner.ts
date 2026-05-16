@@ -15,12 +15,16 @@ export function useCameraTestRunner(testSources: string[], testStatuses: string[
             const res = await fetch("/api/camera/traffic");
             const data = await res.json();
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let staticFeatures: any[] = [];
             try {
                 const staticRes = await fetch("/public-cameras.json");
                 if (staticRes.ok) {
                     const staticData = await staticRes.json();
                     if (staticData.features) {
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         staticFeatures = staticData.features.map((f: any) => ({
                             ...f,
                             properties: {
@@ -32,20 +36,28 @@ export function useCameraTestRunner(testSources: string[], testStatuses: string[
                     }
                 }
             } catch (staticErr) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.error("Failed to fetch static cameras:", staticErr);
             }
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let combinedFeatures: any[] = [];
             if (data.cameras) {
                 combinedFeatures = [...data.cameras];
             }
             combinedFeatures = [...combinedFeatures, ...staticFeatures];
 
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             setCameras(combinedFeatures.map((c: any) => ({
                 feature: c,
                 status: "pending"
             })));
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(err);
         }
         setLoading(false);

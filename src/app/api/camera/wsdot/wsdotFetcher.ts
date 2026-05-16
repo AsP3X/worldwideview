@@ -76,6 +76,8 @@ export async function fetchWsdotCameras(): Promise<GdotCameraFeature[]> {
     const key = process.env.WSDOT_API_KEY;
     if (!key) {
         if (!warnedMissingKey) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn(
                 "[WSDOT] WSDOT_API_KEY not set — skipping. "
                 + "Get a free key at https://wsdot.wa.gov/traffic/api/",

@@ -17,10 +17,14 @@ describe("EngineManifest", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetManifestCache();
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.fetch = vi.fn() as any;
   });
 
   it("should fetch manifest from local engine and cache it", async () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global.fetch as any).mockResolvedValue({
       ok: true,
       json: async () => ({ plugins: ["plugin-a", "plugin-b"] }),
@@ -37,6 +41,8 @@ describe("EngineManifest", () => {
   });
 
   it("should return null and cache failure if local engine is missing", async () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global.fetch as any).mockRejectedValue(new Error("Connection refused"));
 
     const plugins = await fetchLocalEngineManifest();
@@ -56,6 +62,8 @@ describe("resolveEngineUrl", () => {
 
   it("should prioritize local engine if plugin is found there", async () => {
     // Setup local manifest
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global.fetch as any).mockResolvedValue({
       ok: true,
       json: async () => ({ plugins: ["plugin-local"] }),
@@ -67,6 +75,8 @@ describe("resolveEngineUrl", () => {
   });
 
   it("should fall back to plugin's custom streamUrl if not local", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getPlugin as any).mockReturnValue({
       plugin: {
         getServerConfig: () => ({ streamUrl: "ws://custom-engine/stream" })
@@ -78,7 +88,11 @@ describe("resolveEngineUrl", () => {
   });
 
   it("should fall back to manifest streamUrl if provided", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getPlugin as any).mockReturnValue(undefined);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getManifest as any).mockReturnValue({
       dataSource: { streamUrl: "ws://manifest-engine/stream" }
     });
@@ -88,7 +102,11 @@ describe("resolveEngineUrl", () => {
   });
 
   it("should use default cloud engine as last resort", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getPlugin as any).mockReturnValue(undefined);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getManifest as any).mockReturnValue(undefined);
 
     const url = resolveEngineUrl("unknown-plugin");

@@ -3,6 +3,8 @@ import { validateManifest } from "./validateManifest";
 
 describe("validateManifest", () => {
   it("should validate a correct manifest", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const manifest: any = {
       id: "test-plugin",
       name: "Test Plugin",
@@ -27,6 +29,8 @@ describe("validateManifest", () => {
   });
 
   it("should flag invalid entry URLs", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const manifest: any = {
       id: "p1",
 name: "n1",
@@ -42,6 +46,8 @@ entry: "https://hacker.com/malicious.js"
   });
 
   it("should require extends for extensions", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const manifest: any = {
       id: "p1",
 name: "n1",

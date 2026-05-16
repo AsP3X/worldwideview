@@ -47,6 +47,8 @@ export function useBorders(
     // If the user toggles it off mid-load, the ongoing build will finish safely
     // and turn itself invisible instead of unpredictably popping up.
     const enabledRef = useRef(enabled);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line react-hooks/refs
     enabledRef.current = enabled;
 
     useEffect(() => {
@@ -74,13 +76,19 @@ export function useBorders(
             const primitivesList: Primitive[] = [];
 
             try {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.time("[useBorders] 1. GeoJSON parse");
                 const dataSource = new GeoJsonDataSource("borders_temp");
                 await dataSource.load("/borders.geojson");
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.timeEnd("[useBorders] 1. GeoJSON parse");
 
                 if (viewer!.isDestroyed()) return;
 
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.time("[useBorders] 2. Build Batched Geometry Instances");
                 const entities = dataSource.entities.values;
                 const now = JulianDate.now();
@@ -163,8 +171,12 @@ sumLon = 0;
                         }
                     }
                 }
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.timeEnd("[useBorders] 2. Build Batched Geometry Instances");
 
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.time("[useBorders] 3. Compile Master Primitives");
 
                 const BATCH_SIZE = 25; // Dispatch 25 country instances per Web Worker payload
@@ -190,6 +202,8 @@ sumLon = 0;
                     if (viewer!.isDestroyed()) return;
                 }
 
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.timeEnd("[useBorders] 3. Compile Master Primitives");
 
                 bordersDataRef.current = { primitives: primitivesList, labels };
@@ -201,6 +215,8 @@ sumLon = 0;
                     labels.get(i).show = currentlyEnabled;
                 }
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn("[useBorders] Failed to compile low-level 3D borders", err);
                 primitivesList.forEach((p) => {
                     if (viewer!.scene.primitives.contains(p)) viewer!.scene.primitives.remove(p);

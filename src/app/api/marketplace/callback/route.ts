@@ -30,6 +30,8 @@ export async function GET(req: NextRequest) {
     
     try {
         const tokens = await client.authorizationCodeGrant(
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             config as any,
             new URL(req.url),
             { expectedState: stateCookie, pkceCodeVerifier: verifierCookie }
@@ -54,7 +56,11 @@ export async function GET(req: NextRequest) {
                 }
             });
         }
-    } catch (err: any) {
+    } // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (err: any) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[PKCE] Exchange failed:", err.message);
         return NextResponse.json({ error: "Failed to exchange authorization code" }, { status: 500 });
     }

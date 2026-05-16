@@ -15,6 +15,8 @@ function districtUrl(d: number): string {
     return `https://cwwp2.dot.ca.gov/data/d${d}/cctv/cctvStatusD${padded}.json`;
 }
 
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toGeoJsonFeature(raw: any): GdotCameraFeature | null {
     const cam = raw.cctv;
     if (!cam?.location) return null;

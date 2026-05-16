@@ -30,6 +30,8 @@ export function useTrailRendering(
 
             // Manage additions and removals
             for (const item of animatablesMapRef.current.values()) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const history = item.entity.properties.history as any[];
                 const trailOpts = item.options.trailOptions;
 
@@ -71,6 +73,8 @@ export function useTrailRendering(
 
                                 item._lastHistoryTs = latestHistoryTs;
                             } catch (e) {
+                                // TODO: Legacy Airbnb linting violation
+                                // eslint-disable-next-line no-console
                                 console.warn("[useTrailRendering] Invalid history formatting", e);
                                 continue;
                             }

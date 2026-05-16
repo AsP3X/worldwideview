@@ -20,9 +20,11 @@ export interface FavoriteItem {
     /** Human-readable label for the favorite. */
     label: string;
     /** Display name of the plugin for UI purposes. */
-    pluginName: string;
+    pluginName: string
     /** Optional React icon element (not persisted to DB/Cookie). */
-    icon?: any;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    icon?: any
     /** Timestamp of when the bookmark was created or last updated. */
     lastSeen: number;
 }
@@ -32,9 +34,11 @@ export interface FavoriteItem {
  */
 export interface FavoritesSlice {
     /** List of all bookmarked items. */
-    favorites: FavoriteItem[];
+    favorites: FavoriteItem[]
     /** Adds a new entity to the favorites list and persists it to the backend/cookie. */
-    addFavorite: (entity: GeoEntity, pluginName: string, icon?: any) => void;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    addFavorite: (entity: GeoEntity, pluginName: string, icon?: any) => void
     /** Removes an entity from favorites and updates the persistence layer. */
     removeFavorite: (id: string) => void;
     /** Replaces the entire favorites list (typically called during initial app hydration). */

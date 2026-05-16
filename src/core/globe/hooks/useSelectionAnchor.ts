@@ -16,9 +16,12 @@ const SELECTION_BOX_SVG = `data:image/svg+xml;charset=utf-8,${encodeURIComponent
 </svg>
 `)}`;
 
-export function useSelectionAnchor(
+export // TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function useSelectionAnchor(
     viewer: CesiumViewer | null,
     isReady: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectedEntity: any,
     lockedEntityId: string | null,
     selectionEntityRef: React.MutableRefObject<CesiumEntity | null>,
@@ -32,6 +35,8 @@ export function useSelectionAnchor(
         try {
             // Create a hidden entity for camera tracking/flying
             if (!viewer.entities) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.warn("[GlobeView] Viewer entities collection not available during selection anchor init");
                 return;
             }
@@ -47,10 +52,14 @@ export function useSelectionAnchor(
                     height: 56,
                     show: false,
                     disableDepthTestDistance: Number.POSITIVE_INFINITY, // Always rendered on top
-                } as any
+                } as // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                any
             });
             selectionEntityRef.current = entity;
         } catch (error) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn("[GlobeView] Error accessing viewer entities:", error);
             return;
         }
@@ -72,6 +81,8 @@ export function useSelectionAnchor(
         if (!selectionEntity) return;
 
         if (selectionEntity.billboard) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             selectionEntity.billboard.show = (!!selectedEntity && lockedEntityId !== selectedEntity.id) as any;
         }
 

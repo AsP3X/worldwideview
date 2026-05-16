@@ -15,6 +15,8 @@ export abstract class BaseIncidentPlugin implements WorldPlugin {
     abstract id: string;
     abstract name: string;
     abstract description: string;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abstract icon: any;
     abstract category: PluginCategory;
     abstract version: string;
@@ -37,6 +39,8 @@ export abstract class BaseIncidentPlugin implements WorldPlugin {
     protected abstract getSeverityColor(value: number): string;
     protected abstract getSeveritySize(value: number): number;
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected getEntityIcon(entity: GeoEntity): any {
         return this.icon;
     }

@@ -58,12 +58,16 @@ export async function fetchLocalEngineManifest(): Promise<string[] | null> {
 
     const data = await res.json();
     localManifest = data.plugins || [];
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.log(
       `[EngineManifest] Local engine detected: ${localManifest!.length} seeders`,
       localManifest
     );
     return localManifest;
   } catch {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.log("[EngineManifest] No local engine detected, using cloud.");
     // We intentionally leave manifestFetched = true here.
     // This caches the failure so we don't incur this timeout penalty

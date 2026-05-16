@@ -88,8 +88,12 @@ export function applyHighlight(item: AnimatableItem, isSelected: boolean, isHove
     else if (isFaded) targetState = 'faded';
 
     if (item.lastHighlightState === targetState) return;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     item.lastHighlightState = targetState as any;
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const isBillboard = !!options.iconUrl || (options as any)._isAutoSVG;
     const baseScale = options.iconScale ?? 0.7;
 

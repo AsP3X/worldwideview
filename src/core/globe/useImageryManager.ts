@@ -39,11 +39,16 @@ export function useImageryManager(viewer: CesiumViewer | null, viewerReady: bool
     }, [viewer, viewerReady, sceneMode]);
 
     // 2. Manage Imagery Layer and Google 3D Tiles
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line react-hooks/immutability
     useEffect(() => {
         if (!viewer || !viewerReady || viewer.isDestroyed()) return;
 
         async function updateImagery() {
-            if (!viewer || !viewerReady || viewer.isDestroyed()) return;
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line react-hooks/immutability
+            if (!viewer || !viewerReady || viewer.isDestroyed())
+                return;
 
             // Handle Google 3D Tiles specifically
             const isGoogle3D = activeLayerId === "google-3d";
@@ -92,6 +97,8 @@ export function useImageryManager(viewer: CesiumViewer | null, viewerReady: bool
                     viewer.imageryLayers.add(newLayer, 0);
                     currentImageryLayerRef.current = newLayer;
                 } catch (err) {
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.error("[useImageryManager] Failed to load imagery:", activeLayerId, err);
                     try {
                         const osmProvider = createOsmProvider();
@@ -99,8 +106,12 @@ export function useImageryManager(viewer: CesiumViewer | null, viewerReady: bool
                         if (viewer.isDestroyed()) return;
                         viewer.imageryLayers.add(osmLayer, 0);
                         currentImageryLayerRef.current = osmLayer;
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line no-console
                         console.warn("[useImageryManager] Loaded OSM as fallback imagery");
                     } catch (fallbackErr) {
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line no-console
                         console.error("[useImageryManager] OSM fallback also failed:", fallbackErr);
                     }
                 }

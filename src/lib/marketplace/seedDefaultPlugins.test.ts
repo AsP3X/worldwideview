@@ -17,24 +17,38 @@ const mockCreate = vi.fn();
 vi.mock("../db", () => ({
     prisma: {
         setting: {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             findFirst: (...a: any[]) => mockFindFirst(...a),
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             updateMany: (...a: any[]) => mockUpdateMany(...a),
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             create: (...a: any[]) => mockCreate(...a),
         },
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         installedPlugin: { count: (...a: any[]) => mockCount(...a) },
     },
 }));
 
 const mockUpsertPlugin = vi.fn();
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 vi.mock("./repository", () => ({ upsertPlugin: (...a: any[]) => mockUpsertPlugin(...a) }));
 
 const mockValidateManifest = vi.fn();
 vi.mock("@/core/plugins/validateManifest", () => ({
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateManifest: (...a: any[]) => mockValidateManifest(...a),
 }));
 
 const mockGetVerifiedPluginIds = vi.fn();
 vi.mock("./registryClient", () => ({
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getVerifiedPluginIds: (...a: any[]) => mockGetVerifiedPluginIds(...a),
 }));
 

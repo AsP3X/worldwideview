@@ -21,8 +21,12 @@ export {
 } from "./renderCaches";
 
 export interface AnimatableItem {
-    primitive: any;
-    labelPrimitive?: any;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    primitive: any
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    labelPrimitive?: any
     entity: GeoEntity;
     posRef: Cartesian3;
     options: CesiumEntityOptions;
@@ -56,6 +60,8 @@ const collectionsByViewer = new WeakMap<CesiumViewer, PrimitiveCollections>();
 /** Initialize primitive collections on the viewer. */
 export function initPrimitiveCollections(viewer: CesiumViewer): void {
     if (!viewer?.scene?.primitives) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn("[EntityRenderer] initPrimitiveCollections called before viewer.scene was ready — skipping.");
         return;
     }
@@ -147,6 +153,8 @@ currentIds: Set<string>
             iconUrl: getDefaultDotIcon(baseColor, baseOutlineColor, outWidth, pSize),
             iconScale: 1.0,
         };
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (effectiveOptions as any)._isAutoSVG = true;
     }
 

@@ -32,10 +32,9 @@ export interface IconUrlOptions extends Record<string, unknown> {
  * By default wraps the icon in a filled circle for visibility on any terrain.
  * Pass `{ background: false }` to opt out.
  */
-export function createSvgIconUrl(
-    Icon: ComponentType<any>,
-    opts: IconUrlOptions = {},
-): string {
+export // TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createSvgIconUrl(Icon: ComponentType<any>, opts: IconUrlOptions = {}): string {
     const {
         background = true,
         backgroundColor = DEFAULT_BG_COLOR,
@@ -272,11 +271,15 @@ export interface WorldPlugin {
     getServerConfig?(): ServerPluginConfig;
     getFilterDefinitions?(): FilterDefinition[];
     getLegend?(): { label: string; color: string; filterId?: string; filterValue?: string }[];
-    getSidebarComponent?(): ComponentType<{ plugin?: any } | any>;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getSidebarComponent?(): ComponentType<{ plugin?: any } | any>
     getDetailComponent?(): ComponentType<{ entity: GeoEntity }>;
-    getSettingsComponent?(): ComponentType<{ pluginId: string }>;
+    getSettingsComponent?(): ComponentType<{ pluginId: string }>
     /** Custom React component injected into the Globe view for rendering primitives/data sources (e.g. GeoJSON). */
-    getGlobeComponent?(): ComponentType<{ viewer: any; enabled: boolean }>;
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getGlobeComponent?(): ComponentType<{ viewer: any; enabled: boolean }>
     /**
      * Returns a React component to be rendered inside the Bottom Panel when this plugin's
      * dock button is selected. The panel is resizable and can be expanded to fullscreen.
@@ -285,7 +288,9 @@ export interface WorldPlugin {
     getBottomPanelComponent?(): ComponentType<{ pluginId: string; enabled: boolean }>;
     requiresConfiguration?(settings: unknown): boolean;
     /** Map raw websocket payload into GeoEntity array. Optional existingEntities is provided so plugins can merge state (e.g. historical trails). */
-    mapWebsocketPayload?(payload: any, existingEntities?: GeoEntity[]): GeoEntity[];
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mapWebsocketPayload?(payload: any, existingEntities?: GeoEntity[]): GeoEntity[]
 }
 
 // ─── Aliases for backwards compatibility ─────────────────────

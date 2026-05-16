@@ -38,6 +38,8 @@ export async function POST(request: Request) {
         await enablePlugin(pluginId);
         return withCors(NextResponse.json({ status: "enabled", pluginId }), request);
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[marketplace/enable] Error:", err);
         return withCors(
             NextResponse.json({ error: "Enable failed" }, { status: 500 }),

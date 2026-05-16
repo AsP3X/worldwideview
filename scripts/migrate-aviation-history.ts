@@ -22,6 +22,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
+    // eslint-disable-next-line no-console
     console.error("Missing Supabase credentials in .env.local");
     process.exit(1);
 }
@@ -31,6 +32,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // Connect to SQLite DB (respects DB_PATH, fallback to data engine location)
 const defaultDbPath = path.resolve(process.cwd(), "packages/wwv-data-engine/data/engine.db");
 const dbPath = process.env.DB_PATH || defaultDbPath;
+// eslint-disable-next-line no-console
 console.log(`Connecting to SQLite at ${dbPath}...`);
 
 // Ensure DB directory exists
@@ -63,6 +65,7 @@ const insertHistory = db.prepare(`
 `);
 
 async function migrate() {
+    // eslint-disable-next-line no-console
     console.log("Fetching existing aviation_history records from Supabase...");
     let offset = 0;
     const limit = 10000; // Chunk size
@@ -75,15 +78,18 @@ async function migrate() {
             .range(offset, offset + limit - 1);
 
         if (error) {
+            // eslint-disable-next-line no-console
             console.error("Fetch error:", error);
             process.exit(1);
         }
 
         if (!data || data.length === 0) {
+            // eslint-disable-next-line no-console
             console.log("No more records to fetch.");
             break;
         }
 
+        // eslint-disable-next-line no-console
         console.log(`Processing ${data.length} records (Offset: ${offset})...`);
 
         // Batch insert to SQLite
@@ -109,6 +115,7 @@ async function migrate() {
             insertMany(data);
             totalInserted += data.length;
         } catch (err) {
+            // eslint-disable-next-line no-console
             console.error("SQLite Insert Error:", err);
         }
 
@@ -119,6 +126,7 @@ async function migrate() {
         offset += limit;
     }
 
+    // eslint-disable-next-line no-console
     console.log(`Migration complete! Successfully injected ~${totalInserted} records into SQLite.`);
 }
 

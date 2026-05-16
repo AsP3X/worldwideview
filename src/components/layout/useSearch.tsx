@@ -47,6 +47,8 @@ export function useSearch() {
 
     useEffect(() => {
         if (!query.trim()) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLiveSections((prev) => (prev.length === 0 ? prev : []));
             setSelectedIndex((prev) => (prev === 0 ? prev : 0));
             return;
@@ -103,6 +105,8 @@ export function useSearch() {
                     }
                 }
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.error("Error fetching place details:", err);
             }
         }

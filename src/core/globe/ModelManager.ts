@@ -61,6 +61,8 @@ export async function createModelPrimitive(
         scene.primitives.add(model);
         item.primitive = model;
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.warn(`[ModelManager] Failed to load model for ${entity.id}:`, err);
     } finally {
         pendingLoads.delete(entity.id);
@@ -76,6 +78,8 @@ export function updateModelTransform(
     position: Cartesian3,
     heading?: number
 ): void {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const modelsToUpdate: any[] = [];
     if (item.primitive && item.primitive.modelMatrix) {
         modelsToUpdate.push(item.primitive);

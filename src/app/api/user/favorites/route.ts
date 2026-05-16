@@ -16,6 +16,8 @@ export async function GET(request: Request) {
 
         return NextResponse.json(favorites);
     } catch (e) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("GET Favorites Error:", e);
         return NextResponse.json({ error: "Failed to fetch favorites" }, { status: 500 });
     }
@@ -58,6 +60,8 @@ export async function POST(request: Request) {
 
         return NextResponse.json(fav);
     } catch (e) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("POST Favorites Error:", e);
         return NextResponse.json({ error: "Failed to create favorite" }, { status: 500 });
     }
@@ -88,6 +92,8 @@ export async function DELETE(request: Request) {
 
         return NextResponse.json({ success: true });
     } catch (e) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("DELETE Favorites Error:", e);
         return NextResponse.json({ error: "Failed to delete favorite" }, { status: 500 });
     }

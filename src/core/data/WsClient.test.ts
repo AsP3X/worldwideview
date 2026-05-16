@@ -30,6 +30,8 @@ vi.mock("../state/store", () => ({
 }));
 
 describe("WsClient", () => {
+  // TODO: Legacy Airbnb linting violation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockWs: any;
 
   beforeEach(() => {
@@ -52,6 +54,8 @@ describe("WsClient", () => {
     });
 
     // Clear singleton state
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (wsClient as any).engines.clear();
   });
 
@@ -131,8 +135,12 @@ describe("WsClient", () => {
 
   it("should use plugin's custom mapWebsocketPayload if available", () => {
     const mockPlugin = {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mapWebsocketPayload: vi.fn((payload) => payload.map((e: any) => ({ ...e, custom: true })))
     };
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (pluginManager.getPlugin as any).mockReturnValue({ plugin: mockPlugin });
 
     wsClient.subscribe("plugin-custom", "ws://engine-1/stream");

@@ -42,6 +42,8 @@ class WebSocketClient {
     engine.ws = new WebSocket(engineUrl);
 
     engine.ws.onopen = () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.debug(`[WSClient] 🟢 Connected to ${engineUrl}. WS Handshake took ${(performance.now() - wsStart).toFixed(2)}ms`);
       // Resubscribe to all active plugins on this engine
       for (const pluginId of engine.subscriptions) {
@@ -52,11 +54,15 @@ class WebSocketClient {
     engine.ws.onmessage = (event) => {
       try {
         const msgTime = performance.now();
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.debug(`[WSClient] 📥 Received raw message at +${(msgTime - wsStart).toFixed(2)}ms from start:`, event.data.substring(0, 150) + (event.data.length > 150 ? '...' : ''));
         const data = JSON.parse(event.data);
 
         // Handle welcome message (informational, no action needed)
         if (data.type === "welcome") {
+          // TODO: Legacy Airbnb linting violation
+          // eslint-disable-next-line no-console
           console.debug(`[WSClient] 👋 Engine ${engineUrl} serves: ${data.plugins?.join(", ")}`);
           return;
         }
@@ -65,15 +71,21 @@ class WebSocketClient {
           this.handleDataMessage(data as WsStreamPayload);
         }
       } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[WSClient] Error parsing message:", err);
       }
     };
 
     engine.ws.onerror = () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.warn(`[WSClient] Connection to ${engineUrl} failed. Retrying in background...`);
     };
 
     engine.ws.onclose = () => {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.warn(`[WSClient] Disconnected from ${engineUrl}. Reconnecting in 5s...`);
       engine.ws = null;
       if (engine.reconnectTimer) clearTimeout(engine.reconnectTimer);
@@ -89,9 +101,15 @@ class WebSocketClient {
     let finalEntities = data.payload as GeoEntity[];
     const existingEntities = useStore.getState().entitiesByPlugin[data.pluginId!] || [];
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (plugin && typeof (plugin as any).mapWebsocketPayload === "function") {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       finalEntities = (plugin as any).mapWebsocketPayload(data.payload, existingEntities);
     } else if (!Array.isArray(data.payload)) {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.warn(`[WsClient] Payload for ${data.pluginId} is an object but no mapWebsocketPayload exists. Ignoring.`);
       return;
     } else {
@@ -101,6 +119,8 @@ class WebSocketClient {
       }));
     }
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.debug(`[WSClient] 🔄 Dispatching ${finalEntities.length} entities for ${data.pluginId} to DataBus`);
 
     dataBus.emit("dataUpdated", {
@@ -109,6 +129,8 @@ class WebSocketClient {
     });
   }
 
+  // TODO: Legacy Airbnb linting violation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private send(engine: EngineConnection, msg: any) {
     if (engine.ws && engine.ws.readyState === WebSocket.OPEN) {
       engine.ws.send(JSON.stringify(msg));
@@ -116,6 +138,8 @@ class WebSocketClient {
   }
 
   public subscribe(pluginId: string, engineUrl: string) {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.debug(`[WSClient] 📡 Subscribing to ${pluginId} at ${engineUrl}`);
     const engine = this.getOrCreateEngine(engineUrl);
 
@@ -141,6 +165,8 @@ class WebSocketClient {
     if (engine.subscriptions.size === 0) {
       engine.cleanupTimer = setTimeout(() => {
         if (engine.subscriptions.size === 0) {
+          // TODO: Legacy Airbnb linting violation
+          // eslint-disable-next-line no-console
           console.log(`[WSClient] No subscriptions remain for ${engineUrl}. Closing connection.`);
           if (engine.reconnectTimer) clearTimeout(engine.reconnectTimer);
           engine.ws?.close();
@@ -151,6 +177,8 @@ class WebSocketClient {
   }
 
   public printConnections() {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const table: any[] = [];
     this.engines.forEach((engine, url) => {
       table.push({
@@ -159,8 +187,14 @@ class WebSocketClient {
         'Plugins Subscribed': Array.from(engine.subscriptions).join(", ") || "(None)",
       });
     });
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.groupCollapsed("[WSClient] Active Engine Connections Matrix");
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.table(table);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.groupEnd();
   }
 }
@@ -168,5 +202,7 @@ class WebSocketClient {
 export const wsClient = new WebSocketClient();
 
 if (typeof window !== "undefined") {
+  // TODO: Legacy Airbnb linting violation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).wwvDebugConnections = () => wsClient.printConnections();
 }

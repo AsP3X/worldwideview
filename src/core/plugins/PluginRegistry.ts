@@ -19,6 +19,8 @@ class PluginRegistry {
      */
     register(plugin: WorldPlugin): void {
         if (this.plugins.has(plugin.id)) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn(`[PluginRegistry] Plugin "${plugin.id}" already registered`);
             return;
         }

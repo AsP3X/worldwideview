@@ -29,6 +29,8 @@ class DataBus {
             try {
                 handler(data);
             } catch (err) {
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line no-console
                 console.error(`[DataBus] Error in handler for "${event}":`, err);
             }
         });

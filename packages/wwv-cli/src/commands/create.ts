@@ -68,6 +68,8 @@ export const createCommand = new Command('create')
     ]);
 
     if (!response.pluginId) {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.log('Plugin creation cancelled.');
       return;
     }
@@ -78,6 +80,8 @@ export const createCommand = new Command('create')
     const pluginDir = path.join(process.cwd(), targetBaseDir, `wwv-plugin-${pluginId}`);
 
     if (fs.existsSync(pluginDir)) {
+      // TODO: Legacy Airbnb linting violation
+      // eslint-disable-next-line no-console
       console.error(`Error: Directory ${pluginDir} already exists.`);
       process.exit(1);
     }
@@ -192,6 +196,8 @@ ${fetchBoilerplate}
     fs.mkdirSync(path.join(pluginDir, 'src'), { recursive: true });
     fs.writeFileSync(path.join(pluginDir, 'src', 'index.ts'), indexTsContent);
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.log(`\n✅ Successfully created plugin frontend at ${pluginDir}`);
 
     // Generate seeder backend if requested
@@ -222,10 +228,14 @@ export default async function run(context) {
 }
 `;
         fs.writeFileSync(path.join(seederDir, 'seeder.mjs'), seederContent);
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.log(`✅ Successfully created plugin seeder at ${seederDir}`);
       }
     }
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.log(`\nNext steps:
 1. Run \`pnpm install\` from the project root.
 2. Edit \`index.ts\` in your plugin directory.

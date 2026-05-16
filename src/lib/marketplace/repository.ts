@@ -71,5 +71,7 @@ export async function getDisabledPluginIds(): Promise<Set<string>> {
         where: { enabled: false },
         select: { pluginId: true },
     });
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new Set(records.map((r: any) => r.pluginId));
 }

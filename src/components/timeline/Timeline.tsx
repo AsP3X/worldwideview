@@ -35,6 +35,8 @@ export function Timeline() {
     const [isDemoAdmin, setIsDemoAdmin] = useState(false);
 
     useEffect(() => {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
         if (!isDemo) return;
         fetch("/api/auth/session")

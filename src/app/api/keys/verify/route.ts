@@ -62,6 +62,8 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: `Unknown service: ${service}` }, { status: 400 });
         }
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[KeyVerify] Unexpected error:", err);
         return NextResponse.json({ error: "Verification request failed" }, { status: 500 });
     }

@@ -11,12 +11,18 @@ import type { GdotCameraFeature } from "../gdot/gdotFetcher";
 const TFL_URL = "https://api.tfl.gov.uk/Place/Type/JamCam";
 
 /** Extract a named property from TfL additionalProperties array. */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getProp(props: any[], key: string): string {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const found = props?.find((p: any) => p.key === key);
     return found?.value || "";
 }
 
 /** Convert a raw TfL JamCam place into our GeoJSON format. */
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function toGeoJsonFeature(raw: any): GdotCameraFeature | null {
     if (!raw.lat || !raw.lon) return null;
 

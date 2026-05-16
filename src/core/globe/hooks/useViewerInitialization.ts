@@ -8,6 +8,8 @@ import { getUserApiKey } from "@/lib/userApiKeys";
 import { useStore } from "@/core/state/store";
 import { initPrimitiveCollections } from "../EntityRenderer";
 
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useViewerInitialization(sceneSettings: any) {
     const viewerRef = useRef<CesiumViewer | null>(null);
     const [viewerReady, setViewerReady] = useState(false);
@@ -37,8 +39,14 @@ export function useViewerInitialization(sceneSettings: any) {
         sscc.zoomEventTypes = [CameraEventType.WHEEL, CameraEventType.PINCH];
 
         if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (sscc as any)._zoomFactor = 5;
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (sscc as any)._translateFactor = 2;
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (sscc as any)._tiltFactor = 50;
         }
 
@@ -46,7 +54,11 @@ export function useViewerInitialization(sceneSettings: any) {
         initPrimitiveCollections(viewer);
 
         viewer.scene.renderError.addEventListener((scene, error) => {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("[Cesium Render Error] Render loop crashed! Exception:");
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error(error);
         });
 
@@ -68,6 +80,8 @@ export function useViewerInitialization(sceneSettings: any) {
         };
 
         const globalTimeout = setTimeout(() => {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.warn("[GlobeView] Global tile-init timeout (15s) — forcing globe ready.");
             fireGlobeReady();
         }, 15_000);
@@ -97,6 +111,8 @@ export function useViewerInitialization(sceneSettings: any) {
                     viewer.scene.primitives.add(tileset);
 
                     const removeListener = tileset.initialTilesLoaded.addEventListener(() => {
+                        // TODO: Legacy Airbnb linting violation
+                        // eslint-disable-next-line no-console
                         console.log("[GlobeView] Initial tiles loaded — syncing state.");
                         useStore.getState().updateMapConfig({ baseLayerId: "google-3d" });
                         clearTimeout(globalTimeout);
@@ -104,7 +120,11 @@ export function useViewerInitialization(sceneSettings: any) {
                         removeListener();
                     });
                     googleLoaded = true;
-                } catch (err: any) {
+                } // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                catch (err: any) {
+                    // TODO: Legacy Airbnb linting violation
+                    // eslint-disable-next-line no-console
                     console.error("[GlobeView] Failed to initialize Google 3D Tiles:", err);
                 }
             }
@@ -117,6 +137,8 @@ export function useViewerInitialization(sceneSettings: any) {
                  fireGlobeReady();
             }
         } catch (err) {
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.error("[GlobeView] Unexpected error during early globe init:", err);
             fireGlobeReady();
         }

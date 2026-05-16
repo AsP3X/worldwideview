@@ -66,9 +66,13 @@ export async function injectHostGlobals(): Promise<void> {
     // resolveEngineUrl.ts during plugin routing. These variables act as global fallbacks.
     const envDataEngine = process.env.NEXT_PUBLIC_WWV_PLUGIN_DATA_ENGINE_URL;
     if (envDataEngine) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (globalThis as any).__WWV_ENGINE_URL__ = envDataEngine;
     } else {
         // ALWAYS default to the cloud engine unless explicitly told otherwise via env var
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (globalThis as any).__WWV_ENGINE_URL__ = 'https://dataengine.worldwideview.dev';
     }
 
@@ -76,5 +80,7 @@ export async function injectHostGlobals(): Promise<void> {
     const fallbackWs = envDataEngine ? `${envDataEngine.replace(/^http/, "ws")}/stream` : 'wss://dataengine.worldwideview.dev/stream';
     (globalThis as any).__WWV_WS_ENGINE_URL__ = fallbackWs;
 
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.log("[HostGlobals] React and SDK injected for dynamic plugins");
 }

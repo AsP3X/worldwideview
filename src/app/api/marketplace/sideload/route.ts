@@ -33,6 +33,8 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ status: "sideloaded", manifest });
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[Sideload] Error:", err);
         return NextResponse.json(
             { error: "Sideload failed" },

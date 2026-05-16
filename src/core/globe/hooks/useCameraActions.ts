@@ -12,6 +12,8 @@ export function useCameraActions(viewer: CesiumViewer | null, isReady: boolean) 
 
         const unsubFace = dataBus.on("cameraFaceTowards", ({ lat, lon, alt }) => {
             if (!viewer || viewer.isDestroyed()) return;
+            // TODO: Legacy Airbnb linting violation
+            // eslint-disable-next-line no-console
             console.log("[GlobeView] Native faceTowards", lat, lon, alt);
             const target = Cartesian3.fromDegrees(lon, lat, alt);
             const offset = Cartesian3.subtract(
@@ -65,6 +67,8 @@ export function useCameraActions(viewer: CesiumViewer | null, isReady: boolean) 
                 const viewDistance = distance !== undefined ? distance : Math.max(10000, (alt || 0) * 2 + 20000);
 
                 let destination: Cartesian3;
+                // TODO: Legacy Airbnb linting violation
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let orientation: any;
 
                 if (heading !== undefined) {

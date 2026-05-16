@@ -4,6 +4,8 @@ export const revalidate = 120;
 
 const FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
+// TODO: Legacy Airbnb linting violation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isValidFeature(feature: any): boolean {
     const coordinates = feature?.geometry?.coordinates;
     const time = feature?.properties?.time;
@@ -44,6 +46,8 @@ export async function GET() {
             features,
         });
     } catch (error) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[EarthquakeRoute] Error:", error);
         return NextResponse.json(
             { error: "Failed to fetch earthquake feed" },

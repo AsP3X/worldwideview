@@ -43,6 +43,8 @@ export class PluginErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line no-console
     console.error(`[PluginErrorBoundary] Plugin component '${this.props.pluginId}' crashed during render and was isolated:`, error);
   }
 

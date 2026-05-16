@@ -17,6 +17,8 @@ describe("getRequestOrigin", () => {
       ["x-forwarded-host", "myapp.com"],
       ["x-forwarded-proto", "https"]
     ]);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRequest: any = {
       headers: { get: (key: string) => headers.get(key) },
       nextUrl: { origin: "http://0.0.0.0:3000" },
@@ -31,6 +33,8 @@ describe("getRequestOrigin", () => {
     const headers = new Map([
       ["host", "localhost:3000"]
     ]);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRequest: any = {
       headers: { get: (key: string) => headers.get(key) },
       nextUrl: { origin: "http://0.0.0.0:3000" },
@@ -45,6 +49,8 @@ describe("getRequestOrigin", () => {
     const headers = new Map([
       ["host", "0.0.0.0:3000"]
     ]);
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRequest: any = {
       headers: { get: (key: string) => headers.get(key) },
       nextUrl: { origin: "http://0.0.0.0:3000" },
@@ -55,6 +61,8 @@ describe("getRequestOrigin", () => {
   });
 
   it("should replace 0.0.0.0 with localhost as last resort", () => {
+    // TODO: Legacy Airbnb linting violation
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRequest: any = {
       headers: { get: () => null },
       nextUrl: { origin: "http://0.0.0.0:3000" },

@@ -21,6 +21,8 @@ describe('uiSlice', () => {
             clear: vi.fn(),
         });
         document.documentElement.removeAttribute('data-theme');
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         store = createStore<UISlice>((set, get, api) => createUISlice(set as any, get as any, api as any));
     });
 

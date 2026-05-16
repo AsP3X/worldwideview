@@ -50,6 +50,8 @@ export async function POST(request: Request) {
             { status: 200, headers: { "Access-Control-Allow-Origin": "*" } }
         );
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[Load Unpacked] Error:", err);
         return NextResponse.json(
             { error: "Failed to parse or load unpacked manifest" },

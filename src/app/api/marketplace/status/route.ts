@@ -25,6 +25,8 @@ export async function GET(request: Request) {
 
     try {
         const dbPlugins = await getInstalledPlugins();
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dbMap = new Map(dbPlugins.map((p: any) => [p.pluginId, p]));
 
         // Collect all DB plugins (enabled and disabled)
@@ -38,6 +40,8 @@ export async function GET(request: Request) {
 
         return withCors(NextResponse.json({ plugins, canManagePlugins }), request);
     } catch (err) {
+        // TODO: Legacy Airbnb linting violation
+        // eslint-disable-next-line no-console
         console.error("[marketplace/status] Error:", err);
         let canManagePlugins = !isDemo;
         if (isDemo) {
