@@ -18,7 +18,7 @@ import {
     LabelStyle,
     HeightReference,
     NearFarScalar,
-    Ellipsoid,
+    
     Cartographic,
 } from "cesium";
 import type { Viewer as CesiumViewer } from "cesium";

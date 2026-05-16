@@ -20,7 +20,7 @@ export function useImageryManager(viewer: CesiumViewer | null, viewerReady: bool
     const activeLayerId = fallbackLayerId || baseLayerId;
 
     const currentImageryLayerRef = useRef<ImageryLayer | null>(null);
-    const googleTilesetRef = useRef<Cesium3DTileset | null>(null);
+    // const googleTilesetRef = useRef<Cesium3DTileset | null>(null);
     const osmBuildingsRef = useRef<Cesium3DTileset | null>(null);
 
     // 1. Manage Scene Mode (2D / 3D / Columbus)

@@ -16,6 +16,7 @@ export default [
             "local-seeders/**",
             ".agents/**",
             ".claude/**",
+            "*.cjs",
         ],
     },
     ...nextCoreWebVitals,
@@ -35,15 +36,9 @@ export default [
             "@typescript-eslint/no-explicit-any": "warn",
             "no-console": "warn",
 
-            // React 19 hook-purity rules from eslint-plugin-react-hooks 7+:
-            "react-hooks/purity": "warn",
-            "react-hooks/refs": "warn",
-            "react-hooks/set-state-in-effect": "warn",
-            "react-hooks/immutability": "warn",
-            "react-hooks/static-components": "warn",
+
 
             // Misc one-offs across the codebase:
-            "react/no-unescaped-entities": "warn",
             "@typescript-eslint/ban-ts-comment": "warn",
             "@next/next/no-assign-module-variable": "warn",
             "prefer-const": "warn",
