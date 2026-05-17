@@ -5,7 +5,6 @@ import { useStore } from "@/core/state/store";
 import { pluginManager } from "@/core/plugins/PluginManager";
 import { Timeline } from "@/components/timeline/Timeline";
 import { PluginErrorBoundary } from "@/components/common/PluginErrorBoundary";
-import "./BottomPanelManager.css";
 
 export function BottomPanelManager() {
     const activeBottomPanel = useStore((s) => s.activeBottomPanel);
@@ -29,6 +28,7 @@ export function BottomPanelManager() {
 
     useEffect(() => {
         if (activeBottomPanel) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setMountedPanel(activeBottomPanel);
         } else {
             // Keep the panel mounted for the duration of the CSS exit transition (400ms)
@@ -179,6 +179,7 @@ export function BottomPanelManager() {
                     <>
                         <div 
                             className="bottom-panel-resize-handle" 
+                            data-testid="bottom-panel-resize-handle"
                             ref={resizeRef}
                             onMouseDown={() => setIsDragging(true)}
                         >

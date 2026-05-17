@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Command } from 'commander';
 import { execSync } from 'child_process';
 import path from 'path';
@@ -50,7 +51,7 @@ export const publishCommand = new Command('publish')
         process.exit(1);
       }
 
-      let originalName = pkgContent.name;
+      const originalName = pkgContent.name;
       let publishedName = originalName;
 
       // Determine organization
@@ -66,7 +67,7 @@ export const publishCommand = new Command('publish')
           try {
             const whoami = execSync('npm whoami', { stdio: 'pipe' }).toString().trim();
             targetOrg = whoami;
-          } catch (e) {
+          } catch (_e) {
             // Not logged in or errored, ignore
           }
 
