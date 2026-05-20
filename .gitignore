@@ -22,10 +22,6 @@ node_modules/
 /.agents/context
 /.agents/research/
 
-# claude code IDE config
-/.claude/
-/.cline/
-
 # performance
 /performance/
 
@@ -64,7 +60,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
+.env.local
 
 # vercel
 .vercel
@@ -96,6 +93,7 @@ packages/wwv-data-engine/
 
 # IDE workspace files
 *.code-workspace
+*.vscode
 
 # Build outputs and generated assets
 /public/cesium/
