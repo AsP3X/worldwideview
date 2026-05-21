@@ -13,6 +13,7 @@ jobs:
     env:
       NEXT_PUBLIC_WWV_EDITION: local
       AUTH_SECRET: ci-placeholder-secret-not-used-in-tests
+      ENCRYPTION_MASTER_KEY: ci-placeholder-key-not-used-in-tests
     steps:
       - uses: actions/checkout@v6
       
