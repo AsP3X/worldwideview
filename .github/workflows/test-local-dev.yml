@@ -32,7 +32,9 @@ jobs:
         run: pnpm install --frozen-lockfile
         
       - name: Setup environment
-        run: cp .env.example .env
+        run: |
+          cp .env.example .env
+          sed -i 's/^ENCRYPTION_MASTER_KEY=.*/ENCRYPTION_MASTER_KEY=ci-placeholder-key-not-used-in-tests/' .env
         
       - name: Test predev setup
         # Tests that Docker DB boots, port mappings work, Prisma pushes schema, and plugins sync
