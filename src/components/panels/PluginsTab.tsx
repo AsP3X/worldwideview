@@ -61,20 +61,22 @@ function TrustBadge({ trust }: { trust: string }) {
 
 // ─── Browse Link ────────────────────────────────────────────
 
+const MARKETPLACE_BASE = process.env.NEXT_PUBLIC_MARKETPLACE_URL ?? "https://marketplace.worldwideview.dev";
+
 function BrowseLink() {
     function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
         e.preventDefault();
         trackEvent("marketplace-browse-click");
-        const base = "https://marketplace.worldwideview.dev";
-        const url = `${base}?from_instance=${encodeURIComponent(window.location.origin)}`;
+        const url = `${MARKETPLACE_BASE}?from_instance=${encodeURIComponent(window.location.origin)}`;
         window.open(url, "_blank", "noopener,noreferrer");
     }
     return (
       <a
-        href="https://marketplace.worldwideview.dev"
+        href={MARKETPLACE_BASE}
         target="_blank"
         rel="noopener noreferrer"
         className="plugins-tab__browse"
+        data-testid="browse-plugins-btn"
         onClick={handleClick}
       >
         <ExternalLink size={14} />
