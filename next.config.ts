@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Global security headers for all routes
         source: "/(.*)",
         headers: [
           {
@@ -49,6 +50,39 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(self)",
           },
+        ],
+      },
+      {
+        // Camera proxy routes serve content that must be embeddable in an <iframe>
+        // within the same origin. Override the global frame-ancestors 'none' and
+        // X-Frame-Options: DENY so the browser allows the proxy response to be
+        // framed by our own app (localhost:3000 / production domain).
+        // The upstream camera HTML already had its own X-Frame-Options stripped by
+        // the iframe proxy route; this override ensures our response headers don't
+        // re-block it.
+        source: "/api/camera/proxy/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://unpkg.com https://cdn.jsdelivr.net https://analytics.worldwideview.dev https://va.vercel-scripts.com https://pagead2.googlesyndication.com https://adservice.google.com https://www.googletagservices.com https://ep2.adtrafficquality.google https://static.cloudflareinsights.com",
+              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+              "font-src 'self' fonts.gstatic.com",
+              "img-src 'self' data: blob: http: https:",
+              "connect-src 'self' http: https: ws: wss:",
+              "media-src 'self' blob: http: https:",
+              "frame-src 'self' http: https: blob:",
+              "worker-src 'self' blob:",
+              // Allow same-origin framing only — the app embeds these proxy responses
+              // inside <iframe> elements on localhost:3000 / the production domain.
+              "frame-ancestors 'self'",
+            ].join("; "),
+          },
+          // Remove the DENY override — SAMEORIGIN allows our app to frame this response
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
     ];
