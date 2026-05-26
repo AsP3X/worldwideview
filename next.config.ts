@@ -64,20 +64,11 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://unpkg.com https://cdn.jsdelivr.net https://analytics.worldwideview.dev https://va.vercel-scripts.com https://pagead2.googlesyndication.com https://adservice.google.com https://www.googletagservices.com https://ep2.adtrafficquality.google https://static.cloudflareinsights.com",
-              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-              "font-src 'self' fonts.gstatic.com",
-              "img-src 'self' data: blob: http: https:",
-              "connect-src 'self' http: https: ws: wss:",
-              "media-src 'self' blob: http: https:",
-              "frame-src 'self' http: https: blob:",
-              "worker-src 'self' blob:",
-              // Allow same-origin framing only — the app embeds these proxy responses
-              // inside <iframe> elements on localhost:3000 / the production domain.
-              "frame-ancestors 'self'",
-            ].join("; "),
+            // Proxy routes serve arbitrary external HTML (YouTube embeds, camera feeds, etc.).
+            // Restricting style-src/script-src here would break the proxied content since we
+            // cannot predict which CDN domains it loads from. The meaningful security boundary
+            // is frame-ancestors 'self' — only our own origin can embed these proxy responses.
+            value: "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors 'self'",
           },
           // Remove the DENY override — SAMEORIGIN allows our app to frame this response
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
