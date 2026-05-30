@@ -56,6 +56,16 @@ export const globeCommandsLimiter = new RateLimiter({
     maxRequests: 120,
 });
 
+/**
+ * GET /api/globe/commands/stream -- SSE push transport (Phase 19b).
+ * SSE is a long-lived connection, not a burst. One connection per tab per session.
+ * 10 req/60s per IP: covers normal tab open/reconnect cycles with headroom.
+ */
+export const globeCommandsStreamLimiter = new RateLimiter({
+    windowMs: 60_000,
+    maxRequests: 10,
+});
+
 /** /api/mcp — prevents scan/DoS before the expensive auth layer runs. */
 export const mcpLimiter = new RateLimiter({
     windowMs: 60_000,

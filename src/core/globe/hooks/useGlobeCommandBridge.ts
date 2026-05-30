@@ -1,10 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { dataBus } from "@/core/data/DataBus";
 import { useStore } from "@/core/state/store";
 import { isValidGlobeCommand } from "@/core/globe/types/GlobeCommand";
 import type { GlobeCommand } from "@/core/globe/types/GlobeCommand";
-
-const POLL_INTERVAL_MS = 1500;
 
 function dispatchCommand(cmd: GlobeCommand): void {
     switch (cmd.type) {
@@ -66,40 +64,39 @@ function dispatchCommand(cmd: GlobeCommand): void {
     }
 }
 
-async function pollOnce(sessionId: string, active: { current: boolean }): Promise<void> {
-    try {
-        const res = await fetch(`/api/globe/commands?sessionId=${encodeURIComponent(sessionId)}`);
-        if (!res.ok || !active.current) return;
-        const body = (await res.json()) as { commands: unknown[] };
-        const commands = body.commands.filter(isValidGlobeCommand);
-        if (active.current) {
-            commands.forEach(dispatchCommand);
-        }
-    } catch (err) {
-        console.error("[useGlobeCommandBridge] Poll failed:", err);
-    }
-}
-
 export function useGlobeCommandBridge(sessionId: string): void {
-    const activeRef = useRef(false);
-    const inFlightRef = useRef(false);
-
     useEffect(() => {
         if (!sessionId) return;
 
-        activeRef.current = true;
+        const es = new EventSource(
+            `/api/globe/commands/stream?sessionId=${encodeURIComponent(sessionId)}`,
+        );
 
-        const intervalId = setInterval(() => {
-            if (inFlightRef.current) return;
-            inFlightRef.current = true;
-            void pollOnce(sessionId, activeRef).finally(() => {
-                inFlightRef.current = false;
-            });
-        }, POLL_INTERVAL_MS);
+        es.onmessage = (event: MessageEvent) => {
+            try {
+                const parsed: unknown = JSON.parse(event.data as string);
+                if (
+                    parsed !== null &&
+                    typeof parsed === "object" &&
+                    "commands" in parsed &&
+                    Array.isArray((parsed as { commands: unknown }).commands)
+                ) {
+                    (parsed as { commands: unknown[] }).commands
+                        .filter(isValidGlobeCommand)
+                        .forEach(dispatchCommand);
+                }
+            } catch (err) {
+                console.error("[useGlobeCommandBridge] Failed to parse SSE message:", err);
+            }
+        };
+
+        es.onerror = (err: Event) => {
+            console.error("[useGlobeCommandBridge] EventSource error:", err);
+            // EventSource auto-reconnects; no manual action needed.
+        };
 
         return () => {
-            activeRef.current = false;
-            clearInterval(intervalId);
+            es.close();
         };
     }, [sessionId]);
 }

@@ -1,26 +1,24 @@
 /**
- * RED test scaffold for useGlobeCommandBridge (Phase 19a Wave 0).
+ * Contract tests for useGlobeCommandBridge (Phase 19b Wave 0).
  *
- * These tests INTENTIONALLY FAIL because useGlobeCommandBridge.ts does not exist yet.
- * They lock the following contracts:
+ * BRIDGE-01 through BRIDGE-07 are INTENTIONALLY RED in Wave 0 because the hook
+ * still uses setInterval + pollOnce. Wave 1 rewrites the hook to use EventSource.
  *
- *   BRIDGE-01  Polls GET /api/globe/commands?sessionId=... every ~1500ms
- *   BRIDGE-02  pan command dispatches dataBus.emit("cameraGoTo", {lat,lon,alt,...})
- *   BRIDGE-03  toggleLayer command calls the Zustand setLayerEnabled action
- *   BRIDGE-04  Invalid/garbage command dispatches nothing
- *   BRIDGE-05  Empty sessionId never polls
- *   BRIDGE-06  Unmounting stops further polling
- *   BRIDGE-07  Rejected fetch does not throw
+ *   BRIDGE-01  Hook opens EventSource to /api/globe/commands/stream?sessionId=... on mount
+ *   BRIDGE-02  pan command dispatched via onmessage -> dataBus.emit("cameraGoTo", ...)
+ *   BRIDGE-03  toggleLayer command dispatched via onmessage -> Zustand setLayerEnabled
+ *   BRIDGE-04  Unknown command type via onmessage -> nothing dispatched
+ *   BRIDGE-05  Empty sessionId -> EventSource never created
+ *   BRIDGE-06  Unmount -> EventSource.close() called
+ *   BRIDGE-07  onerror firing -> no throw
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useGlobeCommandBridge } from "./useGlobeCommandBridge";
 
 // ---------------------------------------------------------------------------
-// Mock DataBus — confirm real import path from useCameraActions.ts: @/core/data/DataBus
-// vi.mock factories are hoisted above variable declarations, so mock fns must
-// be declared via vi.hoisted() to avoid TDZ reference errors.
+// Mock DataBus
 // ---------------------------------------------------------------------------
 
 const { mockEmit } = vi.hoisted(() => ({
@@ -34,7 +32,7 @@ vi.mock("@/core/data/DataBus", () => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Mock Zustand store — @/core/state/store
+// Mock Zustand store
 // ---------------------------------------------------------------------------
 
 const {
@@ -65,10 +63,6 @@ vi.mock("@/core/state/store", () => ({
     },
 }));
 
-// ---------------------------------------------------------------------------
-// Import mocked store to restore getState after vi.resetAllMocks()
-// ---------------------------------------------------------------------------
-
 import { useStore } from "@/core/state/store";
 
 const mockedUseStore = useStore as unknown as {
@@ -77,14 +71,35 @@ const mockedUseStore = useStore as unknown as {
 };
 
 // ---------------------------------------------------------------------------
-// Setup / teardown
+// MockEventSource
+// ---------------------------------------------------------------------------
+
+let mockEs: MockEventSource;
+
+class MockEventSource {
+    url: string;
+    onmessage: ((ev: MessageEvent) => void) | null = null;
+    onerror: ((ev: Event) => void) | null = null;
+    close = vi.fn();
+
+    constructor(url: string) {
+        this.url = url;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        mockEs = this;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Setup
 // ---------------------------------------------------------------------------
 
 beforeEach(() => {
-    vi.useFakeTimers();
     vi.resetAllMocks();
 
-    // Re-attach getState return value after reset wipes call history
+    // Install MockEventSource as the global before each test
+    global.EventSource = MockEventSource as unknown as typeof EventSource;
+
+    // Restore getState return value after vi.resetAllMocks() wipes call history
     mockedUseStore.getState.mockReturnValue({
         setLayerEnabled: mockSetLayerEnabled,
         toggleLayer: mockToggleLayer,
@@ -93,66 +108,41 @@ beforeEach(() => {
         setCurrentTime: mockSetCurrentTime,
         layers: {},
     });
-
-    global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue({ commands: [] }),
-    });
-});
-
-afterEach(() => {
-    vi.useRealTimers();
-    vi.restoreAllMocks();
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-01: polls the correct endpoint
+// BRIDGE-01: EventSource connection on mount
 // ---------------------------------------------------------------------------
 
-describe("useGlobeCommandBridge polling (BRIDGE-01)", () => {
-    it("polls GET /api/globe/commands?sessionId=sess-1 after the poll interval", async () => {
+describe("useGlobeCommandBridge EventSource connection (BRIDGE-01)", () => {
+    it("opens an EventSource to /api/globe/commands/stream?sessionId=... on mount", () => {
+        // Track construction via the mockEs reference populated by MockEventSource constructor
         renderHook(() => useGlobeCommandBridge("sess-1"));
 
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
-        });
-
-        expect(global.fetch).toHaveBeenCalled();
-        const [[url]] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls as [[string]];
-        expect(url).toContain("/api/globe/commands");
-        expect(url).toContain("sessionId=sess-1");
-    });
-
-    it("polls repeatedly at the configured interval", async () => {
-        renderHook(() => useGlobeCommandBridge("sess-1"));
-
-        await act(async () => {
-            // advanceTimersByTimeAsync flushes microtasks between each timer tick so
-            // the inFlightRef guard resets before the next interval fires.
-            await vi.advanceTimersByTimeAsync(4600); // ~3 intervals at 1500ms
-        });
-
-        expect((global.fetch as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThanOrEqual(2);
+        // mockEs is set by the MockEventSource constructor -- if hook never calls new EventSource,
+        // mockEs will be undefined and these assertions fail (correct RED state).
+        expect(mockEs).toBeDefined();
+        expect(mockEs.url).toContain("/api/globe/commands/stream");
+        expect(mockEs.url).toContain("sessionId=sess-1");
     });
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-02: pan command dispatches dataBus.emit("cameraGoTo", ...)
+// BRIDGE-02: pan command via onmessage -> cameraGoTo
 // ---------------------------------------------------------------------------
 
 describe("useGlobeCommandBridge pan dispatch (BRIDGE-02)", () => {
-    it("emits cameraGoTo with lat, lon, alt when a pan command is returned", async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-                commands: [{ type: "pan", lat: 1, lon: 2, alt: 3 }],
-            }),
-        });
-
+    it("emits cameraGoTo when a pan command arrives via onmessage", () => {
         renderHook(() => useGlobeCommandBridge("sess-1"));
 
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
+        act(() => {
+            mockEs.onmessage?.(
+                new MessageEvent("message", {
+                    data: JSON.stringify({
+                        commands: [{ type: "pan", lat: 1, lon: 2, alt: 3 }],
+                    }),
+                }),
+            );
         });
 
         expect(mockEmit).toHaveBeenCalledWith(
@@ -163,25 +153,23 @@ describe("useGlobeCommandBridge pan dispatch (BRIDGE-02)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-03: toggleLayer command calls Zustand setLayerEnabled
+// BRIDGE-03: toggleLayer command via onmessage -> Zustand action
 // ---------------------------------------------------------------------------
 
 describe("useGlobeCommandBridge toggleLayer dispatch (BRIDGE-03)", () => {
-    it("calls setLayerEnabled or toggleLayer when a toggleLayer command arrives", async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-                commands: [{ type: "toggleLayer", layerId: "ais" }],
-            }),
-        });
-
+    it("calls toggleLayer when a toggleLayer command arrives via onmessage", () => {
         renderHook(() => useGlobeCommandBridge("sess-1"));
 
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
+        act(() => {
+            mockEs.onmessage?.(
+                new MessageEvent("message", {
+                    data: JSON.stringify({
+                        commands: [{ type: "toggleLayer", layerId: "ais" }],
+                    }),
+                }),
+            );
         });
 
-        // Either toggleLayer or setLayerEnabled must be called for the layerId
         const anyLayerAction =
             mockSetLayerEnabled.mock.calls.length > 0 ||
             mockToggleLayer.mock.calls.length > 0;
@@ -190,22 +178,21 @@ describe("useGlobeCommandBridge toggleLayer dispatch (BRIDGE-03)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-04: invalid/garbage command dispatches nothing
+// BRIDGE-04: unknown command type -> nothing dispatched
 // ---------------------------------------------------------------------------
 
 describe("useGlobeCommandBridge invalid command filtering (BRIDGE-04)", () => {
-    it("does not call emit or any store action for an unknown command type", async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue({
-                commands: [{ type: "invalidCommand", foo: "bar" }],
-            }),
-        });
-
+    it("does not dispatch anything for an unknown command type arriving via onmessage", () => {
         renderHook(() => useGlobeCommandBridge("sess-1"));
 
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
+        act(() => {
+            mockEs.onmessage?.(
+                new MessageEvent("message", {
+                    data: JSON.stringify({
+                        commands: [{ type: "invalidCommand", foo: "bar" }],
+                    }),
+                }),
+            );
         });
 
         expect(mockEmit).not.toHaveBeenCalled();
@@ -216,74 +203,47 @@ describe("useGlobeCommandBridge invalid command filtering (BRIDGE-04)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-05: empty sessionId never polls
+// BRIDGE-05: empty sessionId -> EventSource never created
 // ---------------------------------------------------------------------------
 
 describe("useGlobeCommandBridge empty sessionId no-op (BRIDGE-05)", () => {
-    it("never calls fetch when sessionId is empty string", async () => {
+    it("never creates an EventSource when sessionId is empty string", () => {
+        // Reset mockEs -- if hook creates an EventSource, MockEventSource constructor sets it
+        (mockEs as MockEventSource | undefined) = undefined as unknown as MockEventSource;
+
         renderHook(() => useGlobeCommandBridge(""));
 
-        await act(async () => {
-            vi.advanceTimersByTime(10_000);
-        });
-
-        expect(global.fetch).not.toHaveBeenCalled();
+        // If EventSource was constructed, mockEs would be set
+        expect(mockEs as MockEventSource | undefined).toBeUndefined();
     });
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-06: unmounting stops polling
+// BRIDGE-06: unmount -> EventSource.close() called
 // ---------------------------------------------------------------------------
 
 describe("useGlobeCommandBridge unmount cleanup (BRIDGE-06)", () => {
-    it("stops polling after unmount", async () => {
+    it("calls EventSource.close() on unmount", () => {
         const { unmount } = renderHook(() => useGlobeCommandBridge("sess-1"));
-
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
-        });
-
-        const countBeforeUnmount = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.length;
-        expect(countBeforeUnmount).toBeGreaterThanOrEqual(1);
 
         unmount();
 
-        await act(async () => {
-            vi.advanceTimersByTime(5000);
-        });
-
-        const countAfterUnmount = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.length;
-        expect(countAfterUnmount).toBe(countBeforeUnmount);
+        expect(mockEs.close).toHaveBeenCalledTimes(1);
     });
 });
 
 // ---------------------------------------------------------------------------
-// BRIDGE-07: rejected fetch does not throw
+// BRIDGE-07: onerror fires -> no throw
 // ---------------------------------------------------------------------------
 
-describe("useGlobeCommandBridge fetch error resilience (BRIDGE-07)", () => {
-    it("does not throw when fetch rejects", async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Network error"));
-
-        // renderHook would throw if the hook propagates the error
+describe("useGlobeCommandBridge onerror resilience (BRIDGE-07)", () => {
+    it("does not throw when onerror fires", () => {
         renderHook(() => useGlobeCommandBridge("sess-1"));
 
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
-        });
-        // No assertion needed — reaching here means no unhandled throw
-    });
-
-    it("does not throw when fetch returns a non-ok response", async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
-            ok: false,
-            json: vi.fn().mockResolvedValue({}),
+        act(() => {
+            mockEs.onerror?.(new Event("error"));
         });
 
-        renderHook(() => useGlobeCommandBridge("sess-1"));
-
-        await act(async () => {
-            vi.advanceTimersByTime(1600);
-        });
+        // Reaching here without an unhandled exception is the assertion
     });
 });
