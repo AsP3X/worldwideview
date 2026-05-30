@@ -27,13 +27,23 @@ function normalizeEntity(raw: unknown): GeoEntity | null {
     };
 }
 
+/** Validate that a pluginId is safe to embed in a URL path segment. */
+function validatePluginId(pluginId: string): string {
+    if (!/^[a-zA-Z0-9_-]+$/.test(pluginId)) {
+        throw new Error("Invalid pluginId: only alphanumeric characters, hyphens, and underscores are allowed");
+    }
+    return pluginId;
+}
+
 async function fetchPluginSnapshot(pluginId: string): Promise<PluginDataSnapshot | null> {
-    const url = `${getEngineUrl()}/api/${pluginId}`;
+    const safeId = validatePluginId(pluginId);
+    const engineBase = getEngineUrl();
+    const url = new URL(`/api/${safeId}`, engineBase).toString();
     try {
         const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
         if (res.status === 404) return null;
         if (!res.ok) {
-            console.error(`[data-query] Engine returned ${res.status} for plugin "${pluginId}"`);
+            console.error("[data-query] Engine returned", res.status, "for plugin");
             return null;
         }
         const data: unknown = await res.json();
@@ -43,9 +53,9 @@ async function fetchPluginSnapshot(pluginId: string): Promise<PluginDataSnapshot
             if (entity !== null) acc.push(entity);
             return acc;
         }, []);
-        return { pluginId, entities, timestamp: new Date() };
+        return { pluginId: safeId, entities, timestamp: new Date() };
     } catch (err) {
-        console.error(`[data-query] Failed to fetch snapshot for "${pluginId}":`, err);
+        console.error("[data-query] Failed to fetch plugin snapshot:", err);
         return null;
     }
 }
@@ -169,5 +179,9 @@ export async function getEntityDetails(
 
 export async function getPluginData(pluginId: string): Promise<PluginDataSnapshot | null> {
     if (!pluginId.trim()) return null;
-    return fetchPluginSnapshot(pluginId);
+    try {
+        return fetchPluginSnapshot(pluginId);
+    } catch {
+        return null;
+    }
 }
