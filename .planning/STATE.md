@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Agentic Intelligence
-status: verifying
-last_updated: "2026-05-31T04:29:33.307Z"
+status: executing
+last_updated: "2026-05-31T04:51:16.896Z"
 last_activity: 2026-05-31
 progress:
   total_phases: 8
   completed_phases: 5
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 13
+  completed_plans: 11
   percent: 63
 ---
 
@@ -20,17 +20,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-31)
 
 **Core value:** A single globe controllable by any AI agent via MCP -- where the agent arrives oriented, investigates intelligently, and acts with confidence.
-**Current focus:** Phase 26 — server-instructions-orientation
+**Current focus:** Phase 27 — Tool Description Rewrite
 
 ## Current Position
 
-Phase: 26 (server-instructions-orientation) — EXECUTING
-Plan: 1 of 1
-Status: Phase complete — ready for verification
+Phase: 27 (Tool Description Rewrite) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-05-31
 Resume file: None
 
-Progress: [██████████] 100%
+Progress: [█████████░] 85%
 
 ## v1.4 Phase Map
 
