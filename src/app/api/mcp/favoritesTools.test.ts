@@ -14,9 +14,11 @@ const mockReadActiveSessions = vi.mocked(readActiveSessions);
 const mockGetEntityDetails = vi.mocked(getEntityDetails);
 
 const handlers: Record<string, (args: unknown) => unknown> = {};
+const schemas: Record<string, { description: string }> = {};
 const mockServer = {
-    registerTool: vi.fn((name: string, _schema: unknown, handler: (args: unknown) => unknown) => {
+    registerTool: vi.fn((name: string, schema: { description: string }, handler: (args: unknown) => unknown) => {
         handlers[name] = handler;
+        schemas[name] = schema;
     }),
 };
 
@@ -25,7 +27,28 @@ const ctx = { userId: "u1" };
 beforeEach(() => {
     vi.clearAllMocks();
     Object.keys(handlers).forEach((k) => delete handlers[k]);
+    Object.keys(schemas).forEach((k) => delete schemas[k]);
     registerFavoritesTools(mockServer as never, ctx);
+});
+
+describe("favoritesTools tool descriptions (DESC-03)", () => {
+    const toolNames = ["save_favorite", "list_favorites", "remove_favorite"];
+
+    it.each(toolNames)("%s description is non-empty and within 1024 chars", (name) => {
+        const desc = schemas[name].description;
+        expect(desc.length).toBeGreaterThan(0);
+        expect(desc.length).toBeLessThanOrEqual(1024);
+    });
+
+    it.each(toolNames)("%s description contains 'Example:'", (name) => {
+        expect(schemas[name].description).toContain("Example:");
+    });
+
+    it("list_favorites description mentions both 'live' and 'stale'", () => {
+        const desc = schemas["list_favorites"].description;
+        expect(desc).toContain("live");
+        expect(desc).toContain("stale");
+    });
 });
 
 describe("save_favorite tool handler", () => {

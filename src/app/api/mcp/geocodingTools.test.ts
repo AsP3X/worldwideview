@@ -15,9 +15,11 @@ const mockEnqueueGlobeCommand = vi.mocked(enqueueGlobeCommand);
 const mockResolveActiveSessionId = vi.mocked(resolveActiveSessionId);
 
 const handlers: Record<string, (args: unknown) => unknown> = {};
+const schemas: Record<string, { description: string }> = {};
 const mockServer = {
-    registerTool: vi.fn((name: string, _schema: unknown, handler: (args: unknown) => unknown) => {
+    registerTool: vi.fn((name: string, schema: { description: string }, handler: (args: unknown) => unknown) => {
         handlers[name] = handler;
+        schemas[name] = schema;
     }),
 };
 
@@ -26,6 +28,7 @@ const ctx = { userId: "u1" };
 beforeEach(() => {
     vi.clearAllMocks();
     Object.keys(handlers).forEach((k) => delete handlers[k]);
+    Object.keys(schemas).forEach((k) => delete schemas[k]);
     registerGeocodingTools(mockServer as never, ctx);
 });
 
@@ -84,6 +87,32 @@ describe("geocode_location tool handler", () => {
 
         await handlers["geocode_location"]({ query: "test", limit: 100 });
         expect(mockFetchGeocode).toHaveBeenCalledWith(expect.objectContaining({ limit: 20 }));
+    });
+});
+
+describe("geocodingTools tool descriptions (DESC-03)", () => {
+    const toolNames = ["geocode_location", "fly_to"];
+
+    it.each(toolNames)("%s description is non-empty and within 1024 chars", (name) => {
+        const desc = schemas[name].description;
+        expect(desc.length).toBeGreaterThan(0);
+        expect(desc.length).toBeLessThanOrEqual(1024);
+    });
+
+    it.each(toolNames)("%s description contains 'Example:'", (name) => {
+        expect(schemas[name].description).toContain("Example:");
+    });
+
+    it("fly_to description contains globe://sessions precondition", () => {
+        expect(schemas["fly_to"].description).toContain("globe://sessions");
+    });
+
+    it("fly_to description contains no-session outcome", () => {
+        expect(schemas["fly_to"].description).toContain("no active globe session to control");
+    });
+
+    it("fly_to description contains Prefer disambiguation", () => {
+        expect(schemas["fly_to"].description).toContain("Prefer");
     });
 });
 

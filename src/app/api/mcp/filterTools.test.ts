@@ -14,9 +14,11 @@ const mockResolveActiveSessionId = vi.mocked(resolveActiveSessionId);
 const mockReadSessionCatalog = vi.mocked(readSessionCatalog);
 
 const handlers: Record<string, (args: unknown) => unknown> = {};
+const schemas: Record<string, { description: string }> = {};
 const mockServer = {
-    registerTool: vi.fn((name: string, _schema: unknown, handler: (args: unknown) => unknown) => {
+    registerTool: vi.fn((name: string, schema: { description: string }, handler: (args: unknown) => unknown) => {
         handlers[name] = handler;
+        schemas[name] = schema;
     }),
 };
 
@@ -29,8 +31,28 @@ function textOf(result: unknown): string {
 beforeEach(() => {
     vi.clearAllMocks();
     Object.keys(handlers).forEach((k) => delete handlers[k]);
+    Object.keys(schemas).forEach((k) => delete schemas[k]);
     mockResolveActiveSessionId.mockResolvedValue("sess-abc");
     registerFilterTools(mockServer as never, ctx);
+});
+
+describe("filterTools tool descriptions (DESC-03)", () => {
+    const toolNames = ["set_filter", "clear_filter", "get_plugin_filters"];
+
+    it.each(toolNames)("%s description is non-empty and within 1024 chars", (name) => {
+        const desc = schemas[name].description;
+        expect(desc.length).toBeGreaterThan(0);
+        expect(desc.length).toBeLessThanOrEqual(1024);
+    });
+
+    it.each(toolNames)("%s description contains 'Example:'", (name) => {
+        expect(schemas[name].description).toContain("Example:");
+    });
+
+    it("get_plugin_filters description states [] / no-session limitation", () => {
+        const desc = schemas["get_plugin_filters"].description;
+        expect(desc).toMatch(/\[\]|no globe session/);
+    });
 });
 
 describe("set_filter tool handler", () => {
