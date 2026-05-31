@@ -11,7 +11,7 @@ import { matchFilterValue } from "@/core/filters/matchFilterValue";
 import type { FilterValue } from "@/core/plugins/PluginTypes";
 
 function getEngineUrl(): string {
-    return process.env.NEXT_PUBLIC_WWV_PLUGIN_DATA_ENGINE_URL ?? "http://localhost:5000";
+    return process.env.WWV_DATA_ENGINE_URL ?? "http://localhost:5001";
 }
 
 function normalizeEntity(raw: unknown): GeoEntity | null {

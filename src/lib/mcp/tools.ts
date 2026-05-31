@@ -172,7 +172,7 @@ export function registerDataQueryTools(server: McpServer, ctx: { userId: string 
                 const result = await getEntityDetails(input.pluginId, input.entityId);
                 if (result.data === null) {
                     const emptyReason = await resolveEmptyReason(userId, result.emptyReason);
-                    return toolError(JSON.stringify({ reason: "Entity not found", emptyReason }));
+                    return { content: [{ type: "text", text: JSON.stringify({ success: true, data: null, emptyReason }) }] };
                 }
                 return {
                     content: [
