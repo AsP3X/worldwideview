@@ -1,9 +1,12 @@
 import type { GeoEntity } from "@worldwideview/wwv-plugin-sdk";
+import type { FilterValue } from "@/core/plugins/PluginTypes";
 
 export interface SearchOptions {
     query: string;
     pluginId?: string;
     limit?: number;
+    /** Optional inline filters keyed by entity property key (FILT-04, D-07). */
+    filters?: Record<string, FilterValue>;
 }
 
 export interface SearchResult {

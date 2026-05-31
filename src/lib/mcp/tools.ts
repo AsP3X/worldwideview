@@ -15,6 +15,7 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { latSchema, lonSchema } from "@/lib/mcp/coordinateSchemas";
+import { filterValueSchema } from "@/lib/mcp/filterSchemas";
 import {
     searchEntities,
     getEntitiesInRegion,
@@ -41,11 +42,15 @@ export function registerDataQueryTools(server: McpServer): void {
         "search_entities",
         {
             description:
-                "Search for geospatial entities by name across active plugins. Returns up to 20 results with id, name, latitude, longitude, and pluginId. An empty result (count 0) means no match or no live data, not an error.",
+                "Search for geospatial entities by name across active plugins. Returns up to 20 results with id, name, latitude, longitude, and pluginId. Optionally pass 'filters' keyed by entity property key to return only matching entities (independent of any set_filter state). An empty result (count 0) means no match or no live data, not an error.",
             inputSchema: {
                 query: z.string().describe("Search query string"),
                 pluginId: z.string().optional().describe("Restrict search to a specific plugin"),
                 limit: z.number().optional().describe("Maximum results to return (max 20)"),
+                filters: z
+                    .record(z.string(), filterValueSchema)
+                    .optional()
+                    .describe("Optional inline filters keyed by entity property key (e.g. { status: { type: 'select', values: ['airborne'] } }). Independent of set_filter state."),
             },
         },
         async (input) => {
@@ -54,6 +59,7 @@ export function registerDataQueryTools(server: McpServer): void {
                     input.query,
                     input.pluginId,
                     Math.min(input.limit ?? 20, 20),
+                    input.filters,
                 );
                 return {
                     content: [

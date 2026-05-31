@@ -96,6 +96,59 @@ describe("searchEntities", () => {
 });
 
 // ---------------------------------------------------------------------------
+// FILT-04 — searchEntities inline filters (on GeoEntity.properties, D-07)
+// ---------------------------------------------------------------------------
+
+describe("searchEntities filters", () => {
+    it("returns only entities whose properties match the filter", async () => {
+        const airborne = makeEntity({ id: "a1", label: "flight a1", pluginId: "flights", properties: { status: "airborne" } });
+        const landed = makeEntity({ id: "a2", label: "flight a2", pluginId: "flights", properties: { status: "landed" } });
+        mockEngineSnapshot("flights", [airborne, landed]);
+        const results = await searchEntities("flight", "flights", 20, {
+            status: { type: "select", values: ["airborne"] },
+        });
+        expect(results).toHaveLength(1);
+        expect(results[0].id).toBe("a1");
+    });
+
+    it("behaves identically when filters are omitted (no regression)", async () => {
+        const e1 = makeEntity({ id: "b1", label: "flight b1", pluginId: "flights", properties: { status: "airborne" } });
+        const e2 = makeEntity({ id: "b2", label: "flight b2", pluginId: "flights", properties: { status: "landed" } });
+        mockEngineSnapshot("flights", [e1, e2]);
+        const results = await searchEntities("flight", "flights", 20);
+        expect(results).toHaveLength(2);
+    });
+
+    it("excludes an entity missing the filtered property key", async () => {
+        const withProp = makeEntity({ id: "c1", label: "flight c1", pluginId: "flights", properties: { status: "airborne" } });
+        const missingProp = makeEntity({ id: "c2", label: "flight c2", pluginId: "flights", properties: {} });
+        mockEngineSnapshot("flights", [withProp, missingProp]);
+        const results = await searchEntities("flight", "flights", 20, {
+            status: { type: "select", values: ["airborne"] },
+        });
+        expect(results).toHaveLength(1);
+        expect(results[0].id).toBe("c1");
+    });
+
+    it("limit counts only matching entities", async () => {
+        const entities = Array.from({ length: 6 }, (_, i) =>
+            makeEntity({
+                id: `d${i}`,
+                label: `flight d${i}`,
+                pluginId: "flights",
+                properties: { status: i % 2 === 0 ? "airborne" : "landed" },
+            }),
+        );
+        mockEngineSnapshot("flights", entities);
+        const results = await searchEntities("flight", "flights", 2, {
+            status: { type: "select", values: ["airborne"] },
+        });
+        expect(results).toHaveLength(2);
+        expect(results.every((r) => r.id.startsWith("d"))).toBe(true);
+    });
+});
+
+// ---------------------------------------------------------------------------
 // QUERY-02 — getEntitiesInRegion
 // ---------------------------------------------------------------------------
 

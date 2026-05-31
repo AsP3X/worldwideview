@@ -5,6 +5,8 @@ import type {
     DetailResult,
     PluginDataSnapshot,
 } from "./types";
+import { matchFilterValue } from "@/core/filters/matchFilterValue";
+import type { FilterValue } from "@/core/plugins/PluginTypes";
 
 function getEngineUrl(): string {
     return process.env.NEXT_PUBLIC_WWV_PLUGIN_DATA_ENGINE_URL ?? "http://localhost:5000";
@@ -99,12 +101,14 @@ export async function searchEntities(
     query: string,
     pluginId?: string,
     limit: number = 20,
+    filters?: Record<string, FilterValue>,
 ): Promise<SearchResult[]> {
     const trimmed = query.trim();
     if (trimmed === "") return [];
 
     const effectiveLimit = Math.min(Math.max(limit, 1), 100);
     const lower = trimmed.toLowerCase();
+    const filterEntries = filters ? Object.entries(filters) : null;
 
     const snapshots = pluginId
         ? await fetchPluginSnapshot(pluginId).then((s) => (s ? [s] : []))
@@ -115,9 +119,16 @@ export async function searchEntities(
         for (const entity of snapshot.entities) {
             if (results.length >= effectiveLimit) break;
             const matchTarget = (entity.label ?? entity.id).toLowerCase();
-            if (matchTarget.includes(lower)) {
-                results.push(entityToSearchResult(entity));
+            if (!matchTarget.includes(lower)) continue;
+            // Apply inline filters on the full GeoEntity.properties BEFORE
+            // entityToSearchResult conversion (which drops properties). D-07.
+            if (filterEntries) {
+                const ok = filterEntries.every(([key, fv]) =>
+                    matchFilterValue(entity.properties[key], fv),
+                );
+                if (!ok) continue;
             }
+            results.push(entityToSearchResult(entity));
         }
         if (results.length >= effectiveLimit) break;
     }
