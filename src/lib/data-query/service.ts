@@ -4,10 +4,15 @@ import type {
     RegionOptions,
     DetailResult,
     PluginDataSnapshot,
+    QueryResult,
+    SingleResult,
 } from "./types";
+import { matchFilterValue } from "@/core/filters/matchFilterValue";
+import type { FilterValue } from "@/core/plugins/PluginTypes";
+import { hasLocalSource, resolveLocalSnapshot, getLocalSourceIds } from "./localSources";
 
 function getEngineUrl(): string {
-    return process.env.NEXT_PUBLIC_WWV_PLUGIN_DATA_ENGINE_URL ?? "http://localhost:5000";
+    return process.env.WWV_DATA_ENGINE_URL ?? "http://localhost:5001";
 }
 
 function normalizeEntity(raw: unknown): GeoEntity | null {
@@ -35,8 +40,12 @@ function validatePluginId(pluginId: string): string {
     return pluginId;
 }
 
-async function fetchPluginSnapshot(pluginId: string): Promise<PluginDataSnapshot | null> {
-    const safeId = validatePluginId(pluginId);
+/**
+ * Private helper: attempt to fetch a plugin snapshot from the data engine.
+ * Returns null on 404, non-2xx, or network failure.
+ * Validation of pluginId is the caller's responsibility.
+ */
+async function fetchEngineSnapshot(safeId: string): Promise<PluginDataSnapshot | null> {
     const engineBase = getEngineUrl();
     const url = new URL(`/api/${safeId}`, engineBase).toString();
     try {
@@ -60,23 +69,48 @@ async function fetchPluginSnapshot(pluginId: string): Promise<PluginDataSnapshot
     }
 }
 
-async function getAllPluginSnapshots(): Promise<PluginDataSnapshot[]> {
-    const url = `${getEngineUrl()}/manifest`;
-    let pluginIds: string[] = [];
-    try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-        if (!res.ok) {
-            console.error(`[data-query] Manifest fetch returned ${res.status}`);
-            return [];
-        }
-        const data: unknown = await res.json();
-        pluginIds = ((data as Record<string, unknown>)?.plugins as string[]) ?? [];
-    } catch (err) {
-        console.error("[data-query] Failed to fetch manifest:", err);
-        return [];
+/**
+ * Fetch a snapshot for the given pluginId.
+ * Resolution order (D-08):
+ *   1. Data engine (engine-first, real-time data).
+ *   2. Local registry (server-side static/client-side sources that have no engine endpoint).
+ *   3. null — the pluginId is genuinely unknown; callers map this to "plugin_not_streaming".
+ */
+export async function fetchPluginSnapshot(pluginId: string): Promise<PluginDataSnapshot | null> {
+    const safeId = validatePluginId(pluginId);
+
+    const engineSnapshot = await fetchEngineSnapshot(safeId);
+    if (engineSnapshot !== null) return engineSnapshot;
+
+    if (await hasLocalSource(safeId)) {
+        return resolveLocalSnapshot(safeId);
     }
 
-    const results = await Promise.allSettled(pluginIds.map(fetchPluginSnapshot));
+    return null;
+}
+
+export async function getAllPluginSnapshots(): Promise<PluginDataSnapshot[]> {
+    const manifestUrl = `${getEngineUrl()}/manifest`;
+    let enginePluginIds: string[] = [];
+    try {
+        const res = await fetch(manifestUrl, { signal: AbortSignal.timeout(5000) });
+        if (!res.ok) {
+            console.error(`[data-query] Manifest fetch returned ${res.status}`);
+        } else {
+            const data: unknown = await res.json();
+            enginePluginIds = ((data as Record<string, unknown>)?.plugins as string[]) ?? [];
+        }
+    } catch (err) {
+        console.error("[data-query] Failed to fetch manifest:", err);
+    }
+
+    // Union engine ids with local-registry ids; dedupe using a Set so a pluginId
+    // present in both resolves only once (engine-first ordering is preserved
+    // because engine ids come first in the Set iteration).
+    const localIds = Array.from(await getLocalSourceIds());
+    const allIds = Array.from(new Set([...enginePluginIds, ...localIds]));
+
+    const results = await Promise.allSettled(allIds.map(fetchPluginSnapshot));
     return results.reduce<PluginDataSnapshot[]>((acc, result) => {
         if (result.status === "fulfilled" && result.value !== null) {
             acc.push(result.value);
@@ -99,32 +133,61 @@ export async function searchEntities(
     query: string,
     pluginId?: string,
     limit: number = 20,
-): Promise<SearchResult[]> {
+    filters?: Record<string, FilterValue>,
+): Promise<QueryResult<SearchResult>> {
     const trimmed = query.trim();
-    if (trimmed === "") return [];
+    if (trimmed === "") return { entities: [], emptyReason: "no_data_matches" };
 
     const effectiveLimit = Math.min(Math.max(limit, 1), 100);
     const lower = trimmed.toLowerCase();
+    const filterEntries = filters ? Object.entries(filters) : null;
 
-    const snapshots = pluginId
-        ? await fetchPluginSnapshot(pluginId).then((s) => (s ? [s] : []))
-        : await getAllPluginSnapshots();
+    // Determine if the plugin is known to the engine (streaming check).
+    let snapshotNotStreaming = false;
+    let snapshots: PluginDataSnapshot[];
+    if (pluginId) {
+        const s = await fetchPluginSnapshot(pluginId);
+        if (s === null) {
+            return { entities: [], emptyReason: "plugin_not_streaming" };
+        }
+        snapshots = [s];
+    } else {
+        snapshots = await getAllPluginSnapshots();
+        // When no pluginId filter: 0 snapshots means engine has no active plugins.
+        if (snapshots.length === 0) {
+            snapshotNotStreaming = true;
+        }
+    }
 
     const results: SearchResult[] = [];
     for (const snapshot of snapshots) {
         for (const entity of snapshot.entities) {
             if (results.length >= effectiveLimit) break;
             const matchTarget = (entity.label ?? entity.id).toLowerCase();
-            if (matchTarget.includes(lower)) {
-                results.push(entityToSearchResult(entity));
+            if (!matchTarget.includes(lower)) continue;
+            // Apply inline filters on the full GeoEntity.properties BEFORE
+            // entityToSearchResult conversion (which drops properties). D-07.
+            if (filterEntries) {
+                const ok = filterEntries.every(([key, fv]) =>
+                    matchFilterValue(entity.properties[key], fv),
+                );
+                if (!ok) continue;
             }
+            results.push(entityToSearchResult(entity));
         }
         if (results.length >= effectiveLimit) break;
     }
-    return results;
+
+    if (results.length === 0) {
+        return {
+            entities: [],
+            emptyReason: snapshotNotStreaming ? "plugin_not_streaming" : "no_data_matches",
+        };
+    }
+    return { entities: results };
 }
 
-export async function getEntitiesInRegion(bounds: RegionOptions): Promise<SearchResult[]> {
+export async function getEntitiesInRegion(bounds: RegionOptions): Promise<QueryResult<SearchResult>> {
     const { north, south, east, west } = bounds;
     if (isNaN(north) || isNaN(south) || isNaN(east) || isNaN(west)) {
         throw new Error("Invalid bounding box: north/south/east/west must all be numbers");
@@ -133,9 +196,20 @@ export async function getEntitiesInRegion(bounds: RegionOptions): Promise<Search
     const effectiveLimit = Math.min(bounds.limit ?? 100, 1000);
     const isAntimeridian = east < west;
 
-    const snapshots = bounds.pluginId
-        ? await fetchPluginSnapshot(bounds.pluginId).then((s) => (s ? [s] : []))
-        : await getAllPluginSnapshots();
+    let snapshotNotStreaming = false;
+    let snapshots: PluginDataSnapshot[];
+    if (bounds.pluginId) {
+        const s = await fetchPluginSnapshot(bounds.pluginId);
+        if (s === null) {
+            return { entities: [], emptyReason: "plugin_not_streaming" };
+        }
+        snapshots = [s];
+    } else {
+        snapshots = await getAllPluginSnapshots();
+        if (snapshots.length === 0) {
+            snapshotNotStreaming = true;
+        }
+    }
 
     const results: SearchResult[] = [];
     for (const snapshot of snapshots) {
@@ -150,38 +224,50 @@ export async function getEntitiesInRegion(bounds: RegionOptions): Promise<Search
         }
         if (results.length >= effectiveLimit) break;
     }
-    return results;
+
+    if (results.length === 0) {
+        return {
+            entities: [],
+            emptyReason: snapshotNotStreaming ? "plugin_not_streaming" : "no_data_matches",
+        };
+    }
+    return { entities: results };
 }
 
 export async function getEntityDetails(
     pluginId: string,
     entityId: string,
-): Promise<DetailResult | null> {
+): Promise<SingleResult<DetailResult>> {
     const snapshot = await fetchPluginSnapshot(pluginId);
-    if (!snapshot) return null;
+    if (!snapshot) return { data: null, emptyReason: "plugin_not_streaming" };
 
     const entity = snapshot.entities.find((e) => e.id === entityId);
-    if (!entity) return null;
+    if (!entity) return { data: null, emptyReason: "no_data_matches" };
 
     return {
-        id: entity.id,
-        pluginId: entity.pluginId,
-        latitude: entity.latitude,
-        longitude: entity.longitude,
-        altitude: entity.altitude,
-        heading: entity.heading,
-        speed: entity.speed,
-        timestamp: entity.timestamp,
-        label: entity.label,
-        properties: entity.properties,
+        data: {
+            id: entity.id,
+            pluginId: entity.pluginId,
+            latitude: entity.latitude,
+            longitude: entity.longitude,
+            altitude: entity.altitude,
+            heading: entity.heading,
+            speed: entity.speed,
+            timestamp: entity.timestamp,
+            label: entity.label,
+            properties: entity.properties,
+        },
     };
 }
 
-export async function getPluginData(pluginId: string): Promise<PluginDataSnapshot | null> {
-    if (!pluginId.trim()) return null;
+export async function getPluginData(pluginId: string): Promise<SingleResult<PluginDataSnapshot>> {
+    if (!pluginId.trim()) return { data: null, emptyReason: "plugin_not_streaming" };
     try {
-        return fetchPluginSnapshot(pluginId);
+        const snapshot = await fetchPluginSnapshot(pluginId);
+        if (snapshot === null) return { data: null, emptyReason: "plugin_not_streaming" };
+        if (snapshot.entities.length === 0) return { data: snapshot, emptyReason: "no_data_matches" };
+        return { data: snapshot };
     } catch {
-        return null;
+        return { data: null, emptyReason: "plugin_not_streaming" };
     }
 }

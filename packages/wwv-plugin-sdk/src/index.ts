@@ -66,7 +66,7 @@ export function createSvgIconUrl(
 }
 
 // ─── Re-export manifest types ─────────────────────────────────
-export type { PluginManifest, PluginFormat, PluginType, TrustTier, PluginCapability, DataSourceConfig, FieldMapping, RenderingConfig, McpToolDeclaration } from "./manifest";
+export type { PluginManifest, PluginFormat, PluginType, TrustTier, PluginCapability, DataSourceConfig, FieldMapping, RenderingConfig, McpToolDeclaration, LocalDataSourceDeclaration } from "./manifest";
 
 // ─── Categories ──────────────────────────────────────────────
 export type PluginCategory =
@@ -315,6 +315,7 @@ export type DataBusEvents = {
     cameraPreset: { presetId: string };
     cameraFaceTowards: { lat: number; lon: number; alt: number };
     cameraGoTo: { lat: number; lon: number; alt: number; distance?: number; maxPitch?: number; heading?: number };
+    cameraFlyToBbox: { west: number; south: number; east: number; north: number };
     globeReady: Record<string, never>;
     pluginError: { pluginId?: string; message: string; error?: Error };
     layerLoadingChanged: { pluginId: string; loading: boolean };

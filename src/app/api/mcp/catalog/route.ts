@@ -22,7 +22,7 @@
 import { NextResponse } from "next/server";
 import { auth as getSession } from "@/lib/auth";
 import { authenticateApiKey } from "@/lib/apiKeyAuth";
-import { publishSessionCatalog, readSessionCatalog } from "@/lib/mcpSessionCatalog";
+import { publishSessionCatalog } from "@/lib/mcpSessionCatalog";
 import type { SessionCatalog } from "@/lib/mcpSessionCatalog";
 import { resolveActiveSessionId } from "@/lib/globeCommandQueue";
 import { globeCommandsLimiter, getClientIp } from "@/lib/rateLimiters";
@@ -142,9 +142,29 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
     }
 
+    // Optional filterDefinitions: a plain object map (pluginId -> defs[]).
+    // Identity is never taken from the body; only this structural shape is
+    // accepted. Reject non-object / array shapes; absent is fine.
+    let filterDefinitions: SessionCatalog["filterDefinitions"] | undefined;
+    const rawFilterDefs = body.filterDefinitions;
+    if (rawFilterDefs !== undefined) {
+        if (
+            !rawFilterDefs ||
+            typeof rawFilterDefs !== "object" ||
+            Array.isArray(rawFilterDefs)
+        ) {
+            return NextResponse.json(
+                { error: "body.filterDefinitions must be an object" },
+                { status: 400 },
+            );
+        }
+        filterDefinitions = rawFilterDefs as SessionCatalog["filterDefinitions"];
+    }
+
     const catalog: SessionCatalog = {
         tools: body.tools as SessionCatalog["tools"],
         capabilities: body.capabilities as string[],
+        ...(filterDefinitions !== undefined && { filterDefinitions }),
     };
 
     // Gate 6: Store -- userId ONLY from auth result (NEVER from body)
@@ -152,6 +172,3 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json({ ok: true });
 }
-
-// Export readSessionCatalog for use by the MCP route (re-export avoids extra import path)
-export { readSessionCatalog };

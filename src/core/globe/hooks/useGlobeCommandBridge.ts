@@ -3,6 +3,7 @@ import { dataBus } from "@/core/data/DataBus";
 import { useStore } from "@/core/state/store";
 import { isValidGlobeCommand } from "@/core/globe/types/GlobeCommand";
 import type { GlobeCommand } from "@/core/globe/types/GlobeCommand";
+import { setLayerActive } from "@/core/plugins/layerActivation";
 
 function dispatchCommand(cmd: GlobeCommand): void {
     switch (cmd.type) {
@@ -16,6 +17,20 @@ function dispatchCommand(cmd: GlobeCommand): void {
                 ...(cmd.heading !== undefined ? { heading: cmd.heading } : {}),
             });
             break;
+
+        case "flyTo":
+            if (cmd.bbox) {
+                const [west, south, east, north] = cmd.bbox;
+                dataBus.emit("cameraFlyToBbox", { west, south, east, north });
+            } else {
+                dataBus.emit("cameraGoTo", {
+                    lat: cmd.lat,
+                    lon: cmd.lng, // flyTo uses "lng"; cameraGoTo expects "lon" -- explicit mapping per D-03
+                    alt: cmd.alt ?? 15_000,
+                });
+            }
+            break;
+
 
         case "focusEntity":
             if (cmd.lat !== undefined && cmd.lon !== undefined) {
@@ -35,11 +50,11 @@ function dispatchCommand(cmd: GlobeCommand): void {
             break;
 
         case "toggleLayer": {
-            const state = useStore.getState();
             if (cmd.enabled !== undefined) {
-                state.setLayerEnabled(cmd.layerId, cmd.enabled);
+                setLayerActive(cmd.layerId, cmd.enabled);
             } else {
-                state.toggleLayer(cmd.layerId);
+                const current = useStore.getState().layers[cmd.layerId]?.enabled ?? false;
+                setLayerActive(cmd.layerId, !current);
             }
             break;
         }
@@ -58,6 +73,24 @@ function dispatchCommand(cmd: GlobeCommand): void {
                 if (!Number.isNaN(d.getTime())) {
                     state.setCurrentTime(d);
                 }
+            }
+            break;
+        }
+
+        case "setFilter": {
+            const state = useStore.getState();
+            for (const [filterId, value] of Object.entries(cmd.filters)) {
+                state.setFilter(cmd.pluginId, filterId, value);
+            }
+            break;
+        }
+
+        case "clearFilter": {
+            const state = useStore.getState();
+            if (cmd.pluginId !== undefined) {
+                state.clearFilters(cmd.pluginId);
+            } else {
+                state.clearAllFilters();
             }
             break;
         }

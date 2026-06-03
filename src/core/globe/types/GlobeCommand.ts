@@ -1,3 +1,5 @@
+import type { FilterValue } from "@/core/plugins/PluginTypes";
+
 // Must stay in sync with the TimeWindow union in @worldwideview/wwv-plugin-sdk.
 export const TIME_WINDOW_VALUES = ["1h", "6h", "24h", "48h", "7d"] as const;
 export type TimeWindowLiteral = (typeof TIME_WINDOW_VALUES)[number];
@@ -6,7 +8,10 @@ export type GlobeCommand =
     | { type: "pan"; lat: number; lon: number; alt: number; duration?: number; heading?: number; pitch?: number }
     | { type: "focusEntity"; entityId?: string; lat?: number; lon?: number }
     | { type: "toggleLayer"; layerId: string; enabled?: boolean }
-    | { type: "setTimeline"; currentTime?: string; timeWindow?: TimeWindowLiteral; isPlaybackMode?: boolean };
+    | { type: "setTimeline"; currentTime?: string; timeWindow?: TimeWindowLiteral; isPlaybackMode?: boolean }
+    | { type: "flyTo"; lat: number; lng: number; alt?: number; bbox?: [number, number, number, number] }
+    | { type: "setFilter"; pluginId: string; filters: Record<string, FilterValue> }
+    | { type: "clearFilter"; pluginId?: string };
 
 function isNumber(v: unknown): v is number {
     return typeof v === "number" && isFinite(v);
@@ -58,6 +63,23 @@ function isOptionalDateString(v: unknown): boolean {
     return v === undefined || isValidDateString(v);
 }
 
+function isValidFilterValue(v: unknown): v is FilterValue {
+    if (v === null || typeof v !== "object" || Array.isArray(v)) return false;
+    const fv = v as Record<string, unknown>;
+    switch (fv["type"]) {
+        case "text":
+            return typeof fv["value"] === "string";
+        case "select":
+            return Array.isArray(fv["values"]) && fv["values"].every((x) => typeof x === "string");
+        case "range":
+            return isNumber(fv["min"]) && isNumber(fv["max"]);
+        case "boolean":
+            return typeof fv["value"] === "boolean";
+        default:
+            return false;
+    }
+}
+
 export function isValidGlobeCommand(obj: unknown): obj is GlobeCommand {
     if (obj === null || typeof obj !== "object" || Array.isArray(obj)) {
         return false;
@@ -95,6 +117,33 @@ export function isValidGlobeCommand(obj: unknown): obj is GlobeCommand {
                 isOptionalTimeWindow(cmd["timeWindow"]) &&
                 isOptionalBoolean(cmd["isPlaybackMode"])
             );
+
+        case "flyTo": {
+            if (!isValidLat(cmd["lat"])) return false;
+            if (!(isNumber(cmd["lng"]) && (cmd["lng"] as number) >= -180 && (cmd["lng"] as number) <= 180)) return false;
+            if (!(isOptionalNumber(cmd["alt"]) && (cmd["alt"] === undefined || isValidAlt(cmd["alt"])))) return false;
+            if (cmd["bbox"] !== undefined) {
+                const bbox = cmd["bbox"];
+                if (!Array.isArray(bbox) || bbox.length !== 4) return false;
+                if (!bbox.every((v: unknown) => isNumber(v))) return false;
+                const [west, south, east, north] = bbox as number[];
+                if (west < -180 || west > 180) return false;
+                if (south < -90 || south > 90) return false;
+                if (east < -180 || east > 180) return false;
+                if (north < -90 || north > 90) return false;
+            }
+            return true;
+        }
+
+        case "setFilter": {
+            if (typeof cmd["pluginId"] !== "string" || cmd["pluginId"] === "") return false;
+            const filters = cmd["filters"];
+            if (filters === null || typeof filters !== "object" || Array.isArray(filters)) return false;
+            return Object.values(filters as Record<string, unknown>).every(isValidFilterValue);
+        }
+
+        case "clearFilter":
+            return isOptionalString(cmd["pluginId"]);
 
         default:
             return false;
