@@ -21,6 +21,6 @@
   "author": "WorldWideView",
   "license": "ISC",
   "peerDependencies": {
-    "@worldwideview/wwv-plugin-sdk": "^1.4.10"
+    "@worldwideview/wwv-plugin-sdk": "workspace:*"
   }
 }
