@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Cloud Launch
-status: in_progress
-last_updated: "2026-06-11T16:33:00.000Z"
-last_activity: 2026-06-11
+status: completed
+last_updated: "2026-06-11T04:43:19.313Z"
+last_activity: "2026-06-11 — Phase 37 Plan 01 shipped: MarketplaceConnect component, callback error handling, connect-status page, encryption key validation, InstanceConfig deprecation banner"
 progress:
   total_phases: 1
   completed_phases: 0
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-06-03)
 
 ## Current Position
 
-Phase: 37 — Account Connection UI (in progress)
-Plan: 01 — Account Connection UI
-Status: Plan 01 complete -- 1033 tests pass, build green
-Last activity: 2026-06-11 — Phase 37 Plan 01 shipped: MarketplaceConnect component, callback error handling, connect-status page, encryption key validation, InstanceConfig deprecation banner
+Phase: 38 — E2E Smoke Test (complete)
+Plan: 01 — E2E Smoke Test
+Status: Plan 01 complete -- 1035 tests pass, build green; noCredential fallback, Playwright E2E script, smoke checklist
+Last activity: 2026-06-11 — Phase 38 Plan 01 shipped: ticket route returns noCredential, WsClient graceful fallback, Playwright E2E script, manual smoke checklist
 
 ## Completed Phases (v1.5)
 
@@ -45,6 +45,7 @@ Last activity: 2026-06-11 — Phase 37 Plan 01 shipped: MarketplaceConnect compo
 | Phase | Result | Commit |
 |-------|--------|--------|
 | 37 Account Connection UI | 1033 tests + build green; MarketplaceConnect component, callback error handling, connect-status page | 57fd018c |
+| 38 E2E Smoke Test | 1035 tests + build green; noCredential fallback, Playwright E2E script, manual smoke checklist | b26b578f |
 
 ## v1.5 Phase Map (archived)
 
@@ -64,6 +65,7 @@ Last activity: 2026-06-11 — Phase 37 Plan 01 shipped: MarketplaceConnect compo
 | Phase | Goal | Key requirements |
 |-------|------|-----------------|
 | 37 | Account Connection UI | Marketplace PKCE connect button, error page, encryption validation |
+| 38 | E2E Smoke Test | noCredential fallback, WsClient graceful degradation, Playwright E2E script, smoke checklist |
 
 **Phase numbering:** v1.6 starts at Phase 37 (v1.5 ended at Phase 36).
 
@@ -119,5 +121,6 @@ Items deferred at v1.5 milestone start (carried from v1.4 close on 2026-06-02):
 
 ## Operator Next Steps
 
-- Plan Phase 31 with /gsd:plan-phase 31 (Transport Resilience -- foundational error contract).
-- Phases execute in numeric order 31 → 32 → 33 → 34 → 35 → 36; dependencies allow some parallelism after Phase 31.
+- Phase 38 (E2E Smoke Test) complete -- all verification artifacts created.
+- Next: Phase 39 (Engine Dual Mode) -- prepare the data engine for dual-mode operation with marketplace auth.
+
